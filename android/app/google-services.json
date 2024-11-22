@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "865744072556",
+    "project_id": "pulsechat-e4521",
+    "storage_bucket": "pulsechat-e4521.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:865744072556:android:1e61320b8e19f1f051cd49",
+        "android_client_info": {
+          "package_name": "com.phoenix.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa8JjHTqQvMHcJNSG-mnbvpfpa2JYd0Dw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
