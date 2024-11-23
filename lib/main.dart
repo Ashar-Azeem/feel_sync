@@ -1,3 +1,4 @@
+import 'package:feel_sync/EmotionDetector/EmotionDetectionManager.dart';
 import 'package:feel_sync/Routes/RouteNames.dart';
 import 'package:feel_sync/Routes/Routing.dart';
 import 'package:feel_sync/Services/AuthService.dart';
@@ -5,6 +6,7 @@ import 'package:feel_sync/Views/MainUI.dart';
 import 'package:feel_sync/Views/login.dart';
 import 'package:feel_sync/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +18,8 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+  final emotionDetectionManager = EmotionDetectionManager();
+  await emotionDetectionManager.initialize();
   runApp(Sizer(builder: (context, orientation, screenType) {
     return MaterialApp(
       title: 'FeelSync',

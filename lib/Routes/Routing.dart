@@ -3,6 +3,7 @@ import 'package:feel_sync/Views/MainUI.dart';
 import 'package:feel_sync/Views/Signup.dart';
 import 'package:feel_sync/Views/login.dart';
 import 'package:feel_sync/main.dart';
+
 import 'package:flutter/material.dart';
 
 class Routes {

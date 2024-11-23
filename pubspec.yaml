@@ -48,6 +48,9 @@ dependencies:
   flutter_bloc: ^8.1.6
   google_fonts: ^6.2.1
   equatable: ^2.0.7
+  json_annotation: ^4.9.0
+  stemmer: ^2.2.0
+  tflite_flutter: ^0.11.0
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +79,9 @@ flutter:
     - assets/Logo.png
     - assets/NameLogo.png
     - assets/blankprofile.png
+    - assets/emotion_detection.tflite
+    - assets/tfidf_vocab.json
+    - assets/stop_words.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
