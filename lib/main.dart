@@ -1,23 +1,22 @@
 import 'package:feel_sync/Routes/RouteNames.dart';
 import 'package:feel_sync/Routes/Routing.dart';
 import 'package:feel_sync/Services/AuthService.dart';
+import 'package:feel_sync/Utilities/Permissions.dart';
 import 'package:feel_sync/Views/MainUI.dart';
 import 'package:feel_sync/Views/login.dart';
-import 'package:feel_sync/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await AuthService().initialize();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  // final emotionDetectionManager = EmotionDetectionManager();
-  // await emotionDetectionManager.initialize();
+  await requestNotificationPermission();
+
   runApp(Sizer(builder: (context, orientation, screenType) {
     return MaterialApp(
       title: 'FeelSync',

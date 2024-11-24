@@ -1,10 +1,10 @@
 import 'dart:typed_data';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:feel_sync/Services/AuthService.dart';
+import 'package:feel_sync/Services/CRUD.dart';
+import 'package:feel_sync/Services/Messaging.dart';
 import 'package:feel_sync/Utilities/LoginAndRegisterationStatus.dart';
-
 part 'login&Registration_event.dart';
 part 'login&Registration_state.dart';
 
@@ -37,30 +37,33 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   void register(Registration event, Emitter<LoginState> emit) async {
     emit(state.copyWith(status: Loginandregisterationstatus.loading));
     try {
-      //DataBase Tasks:
-      // bool checkUserName = await db.userNameExists(u);
-      // if (!checkUserName) {
-      await AuthService()
-          .createUser(email: event.email, password: event.password);
+      bool checkUserName = await Crud().userNameExists(event.userName);
+      if (!checkUserName) {
+        await AuthService()
+            .createUser(email: event.email, password: event.password);
 
-      //Perform DataBase Tasks Here:
-      // if (file != null) {
-      //   file = await compressImage(file);
-      //   url = await uploadImageGetUrl(file, "profile", false);
-      // }
+        //Perform DataBase Tasks Here:
+        // if (file != null) {
+        //   file = await compressImage(file);
+        //   url = await uploadImageGetUrl(file, "profile", false);
+        // }
 
-      // await db.insertUser(
-      //     FirebaseAuth.instance.currentUser!.uid, n, u, url, [], [], token);
+        String token = await Messaging().getFCMToken();
+        await Crud().insertUser(AuthService().getUser()!.uid, event.fullName,
+            event.userName, "", token);
 
-      emit(state.copyWith(
-          status: Loginandregisterationstatus.sucess, error: ""));
-
-      //   else {
-      //      emit(state.copyWith(
-      //  status: Loginandregisterationstatus.failure,
-      //  error: "Username already exists"));
-      // }
+        emit(state.copyWith(
+            status: Loginandregisterationstatus.sucess, error: ""));
+      } else {
+        emit(state.copyWith(
+            status: Loginandregisterationstatus.failure,
+            error: "Username already exists"));
+      }
     } catch (error) {
+      final user = AuthService().getUser();
+      if (user != null) {
+        await user.delete();
+      }
       emit(state.copyWith(
           status: Loginandregisterationstatus.failure,
           error: error.toString()));

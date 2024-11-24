@@ -1,16 +1,14 @@
 // ignore_for_file: file_names
-import 'dart:typed_data';
 import 'package:feel_sync/Routes/RouteNames.dart';
 import 'package:feel_sync/Utilities/ErrorMessage.dart';
-import 'package:feel_sync/Utilities/Image.dart';
 import 'package:feel_sync/Utilities/LoginAndRegisterationStatus.dart';
+import 'package:feel_sync/bloc/ImagePicker/image_picker_bloc.dart';
 import 'package:feel_sync/bloc/LoginBloc/login&Registration_bloc.dart';
 import 'package:feel_sync/bloc/PasswordBloc/password_visibility_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:sizer/sizer.dart';
 
 class SignupView extends StatefulWidget {
@@ -23,12 +21,12 @@ class SignupView extends StatefulWidget {
 class _SignupViewState extends State<SignupView> {
   late PasswordVisibilityBloc _passwordVisibilityBloc;
   late LoginBloc loginBloc;
+  late ImagePickerBloc imagePickerBloc;
   final GlobalKey<FormState> _fullName = GlobalKey<FormState>();
   final GlobalKey<FormState> _userName = GlobalKey<FormState>();
   final GlobalKey<FormState> _email = GlobalKey<FormState>();
   final GlobalKey<FormState> _password = GlobalKey<FormState>();
   Uint8List? file;
-  String? url;
   bool loading = false;
   bool passwordInvisible = true;
   late TextEditingController email;
@@ -40,6 +38,7 @@ class _SignupViewState extends State<SignupView> {
     super.initState();
     _passwordVisibilityBloc = PasswordVisibilityBloc();
     loginBloc = LoginBloc();
+    imagePickerBloc = ImagePickerBloc();
     email = TextEditingController();
     password = TextEditingController();
     userName = TextEditingController();
@@ -53,15 +52,9 @@ class _SignupViewState extends State<SignupView> {
     fullName.dispose();
     userName.dispose();
     loginBloc.close();
+    imagePickerBloc.close();
     _passwordVisibilityBloc.close();
     super.dispose();
-  }
-
-  void selectImage() async {
-    Uint8List? img = await imagepicker(ImageSource.gallery);
-    setState(() {
-      file = img;
-    });
   }
 
   bool _validateAllFields() {
@@ -82,7 +75,8 @@ class _SignupViewState extends State<SignupView> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => _passwordVisibilityBloc),
-        BlocProvider(create: (_) => loginBloc)
+        BlocProvider(create: (_) => loginBloc),
+        BlocProvider(create: (_) => imagePickerBloc)
       ],
       child: Scaffold(
         body: SafeArea(
@@ -116,29 +110,38 @@ class _SignupViewState extends State<SignupView> {
                   const Spacer(
                     flex: 2,
                   ),
-                  Stack(alignment: Alignment.bottomRight, children: [
-                    file == null
-                        ? CircleAvatar(
-                            radius: 15.w,
-                            backgroundImage:
-                                const AssetImage('assets/blankprofile.png'),
-                            backgroundColor: Colors.black,
-                          )
-                        : CircleAvatar(
-                            radius: 15.w,
-                            backgroundImage: MemoryImage(file!),
-                            backgroundColor: Colors.black,
-                          ),
-                    IconButton(
-                        onPressed: () {
-                          selectImage();
-                        },
-                        icon: const Icon(
-                          Icons.add_a_photo,
-                          size: 40,
-                          color: Color.fromARGB(255, 134, 133, 133),
-                        )),
-                  ]),
+                  BlocBuilder<ImagePickerBloc, ImagePickerState>(
+                    builder: (context, state) {
+                      file = state.file;
+
+                      return Stack(alignment: Alignment.bottomRight, children: [
+                        file == null
+                            ? CircleAvatar(
+                                radius: 15.w,
+                                backgroundImage:
+                                    const AssetImage('assets/blankprofile.png'),
+                                backgroundColor: Colors.black,
+                              )
+                            : CircleAvatar(
+                                radius: 15.w,
+                                backgroundImage: MemoryImage(file!),
+                                backgroundColor: Colors.black,
+                              ),
+                        IconButton(
+                            padding: EdgeInsets.only(left: 4.w),
+                            onPressed: () {
+                              context
+                                  .read<ImagePickerBloc>()
+                                  .add(PickAnImage());
+                            },
+                            icon: Icon(
+                              Icons.add_a_photo_outlined,
+                              color: Colors.blue,
+                              size: 10.w,
+                            ))
+                      ]);
+                    },
+                  ),
                   const Spacer(
                     flex: 2,
                   ),
@@ -338,18 +341,21 @@ class _SignupViewState extends State<SignupView> {
                     child: BlocBuilder<LoginBloc, LoginState>(
                       builder: (context, state) {
                         return ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
+                              print(file);
                               bool value = _validateAllFields();
                               if (value) {
                                 final e = email.text;
                                 final p = password.text;
                                 final n = fullName.text;
                                 final u = userName.text;
-                                context.read<LoginBloc>().add(Registration(
-                                    fullName: n,
-                                    userName: u,
-                                    email: e,
-                                    password: p));
+
+                                // context.read<LoginBloc>().add(Registration(
+                                //     fullName: n,
+                                //     userName: u,
+                                //     email: e,
+                                //     password: p,
+                                //     file: file));
                               }
                             },
                             style: ElevatedButton.styleFrom(
