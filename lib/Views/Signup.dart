@@ -342,7 +342,6 @@ class _SignupViewState extends State<SignupView> {
                       builder: (context, state) {
                         return ElevatedButton(
                             onPressed: () async {
-                              print(file);
                               bool value = _validateAllFields();
                               if (value) {
                                 final e = email.text;
@@ -350,12 +349,12 @@ class _SignupViewState extends State<SignupView> {
                                 final n = fullName.text;
                                 final u = userName.text;
 
-                                // context.read<LoginBloc>().add(Registration(
-                                //     fullName: n,
-                                //     userName: u,
-                                //     email: e,
-                                //     password: p,
-                                //     file: file));
+                                context.read<LoginBloc>().add(Registration(
+                                    fullName: n,
+                                    userName: u,
+                                    email: e,
+                                    password: p,
+                                    file: file));
                               }
                             },
                             style: ElevatedButton.styleFrom(
