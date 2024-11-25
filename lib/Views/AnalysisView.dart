@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
 
-class UsersListView extends StatelessWidget {
-  const UsersListView({super.key});
+class Analysisview extends StatelessWidget {
+  const Analysisview({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class UsersListView extends StatelessWidget {
                 },
                 blendMode: BlendMode.srcIn,
                 child: Text(
-                  "Explore",
+                  "Analytics",
                   style: GoogleFonts.getFont('League Spartan',
                       textStyle: TextStyle(
                           fontSize: 8.w,

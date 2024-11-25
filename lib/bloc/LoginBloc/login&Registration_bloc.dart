@@ -47,10 +47,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         //   file = await compressImage(file);
         //   url = await uploadImageGetUrl(file, "profile", false);
         // }
-
+        int age =
+            (DateTime.now().difference(event.DOB).inDays / 365.25).toInt();
         String token = await Messaging().getFCMToken();
         await Crud().insertUser(AuthService().getUser()!.uid, event.fullName,
-            event.userName, "", token);
+            event.userName, "", token, age, event.gender);
 
         emit(state.copyWith(
             status: Loginandregisterationstatus.sucess, error: ""));

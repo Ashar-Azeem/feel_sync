@@ -61,8 +61,8 @@ class _LoginViewState extends State<LoginView> {
                     shaderCallback: (Rect bounds) {
                       return const LinearGradient(
                         colors: [
-                          Color.fromARGB(255, 0, 58, 128),
-                          Color.fromARGB(255, 72, 200, 247),
+                          Color.fromARGB(255, 2, 93, 205),
+                          Color.fromARGB(255, 155, 225, 250),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,

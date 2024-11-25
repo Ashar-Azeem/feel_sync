@@ -6,7 +6,7 @@ class Crud {
       FirebaseFirestore.instance.collection('users');
 
   Future<void> insertUser(String userId, String name, String userName,
-      String? profileLocation, String token) async {
+      String? profileLocation, String token, int age, String gender) async {
     try {
       await userCollection.doc(userId).set({
         'name': name,
@@ -14,6 +14,8 @@ class Crud {
         'bio': '',
         'profileLocation': profileLocation,
         'token': token,
+        'gender': gender,
+        'age': age,
       });
     } catch (e) {
       //

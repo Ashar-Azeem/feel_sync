@@ -2,6 +2,7 @@
 import 'package:feel_sync/Routes/RouteNames.dart';
 import 'package:feel_sync/Utilities/ErrorMessage.dart';
 import 'package:feel_sync/Utilities/LoginAndRegisterationStatus.dart';
+import 'package:feel_sync/bloc/DateSelector/date_selector_bloc.dart';
 import 'package:feel_sync/bloc/ImagePicker/image_picker_bloc.dart';
 import 'package:feel_sync/bloc/LoginBloc/login&Registration_bloc.dart';
 import 'package:feel_sync/bloc/PasswordBloc/password_visibility_bloc.dart';
@@ -19,13 +20,18 @@ class SignupView extends StatefulWidget {
 }
 
 class _SignupViewState extends State<SignupView> {
+  String gender = "Male";
+  DateTime? dataTime;
+  TextEditingController DOB = TextEditingController();
   late PasswordVisibilityBloc _passwordVisibilityBloc;
   late LoginBloc loginBloc;
   late ImagePickerBloc imagePickerBloc;
+  late DateSelectorBloc dateSelectorBloc;
   final GlobalKey<FormState> _fullName = GlobalKey<FormState>();
   final GlobalKey<FormState> _userName = GlobalKey<FormState>();
   final GlobalKey<FormState> _email = GlobalKey<FormState>();
   final GlobalKey<FormState> _password = GlobalKey<FormState>();
+  final GlobalKey<FormState> _DOB = GlobalKey<FormState>();
   Uint8List? file;
   bool loading = false;
   bool passwordInvisible = true;
@@ -43,6 +49,7 @@ class _SignupViewState extends State<SignupView> {
     password = TextEditingController();
     userName = TextEditingController();
     fullName = TextEditingController();
+    dateSelectorBloc = DateSelectorBloc();
   }
 
   @override
@@ -54,6 +61,7 @@ class _SignupViewState extends State<SignupView> {
     loginBloc.close();
     imagePickerBloc.close();
     _passwordVisibilityBloc.close();
+    DOB.dispose();
     super.dispose();
   }
 
@@ -62,8 +70,13 @@ class _SignupViewState extends State<SignupView> {
     bool isUserNameValid = _userName.currentState!.validate();
     bool isEmailValid = _email.currentState!.validate();
     bool isPasswordValid = _password.currentState!.validate();
+    bool isdateValid = _DOB.currentState!.validate();
 
-    if (isFullNameValid && isUserNameValid && isEmailValid && isPasswordValid) {
+    if (isFullNameValid &&
+        isUserNameValid &&
+        isEmailValid &&
+        isPasswordValid &&
+        isdateValid) {
       return true;
     } else {
       return false;
@@ -76,7 +89,8 @@ class _SignupViewState extends State<SignupView> {
       providers: [
         BlocProvider(create: (_) => _passwordVisibilityBloc),
         BlocProvider(create: (_) => loginBloc),
-        BlocProvider(create: (_) => imagePickerBloc)
+        BlocProvider(create: (_) => imagePickerBloc),
+        BlocProvider(create: (_) => dateSelectorBloc)
       ],
       child: Scaffold(
         body: SafeArea(
@@ -90,8 +104,8 @@ class _SignupViewState extends State<SignupView> {
                     shaderCallback: (Rect bounds) {
                       return const LinearGradient(
                         colors: [
-                          Color.fromARGB(255, 0, 58, 128),
-                          Color.fromARGB(255, 72, 200, 247),
+                          Color.fromARGB(255, 2, 93, 205),
+                          Color.fromARGB(255, 155, 225, 250),
                         ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
@@ -229,6 +243,86 @@ class _SignupViewState extends State<SignupView> {
                       )),
                   const Spacer(),
                   Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: BlocListener<DateSelectorBloc, DateSelectorState>(
+                      listener: (context, state) {
+                        if (state.dateTime != null) {
+                          DOB.text =
+                              '${state.dateTime!.toLocal()}'.split(' ')[0];
+                          dataTime = state.dateTime;
+                        }
+                      },
+                      child: BlocBuilder<DateSelectorBloc, DateSelectorState>(
+                        builder: (context, state) {
+                          return Form(
+                            key: _DOB,
+                            child: TextFormField(
+                              controller: DOB,
+                              decoration: const InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.all(16),
+                                border: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                  width: 1,
+                                  color: Colors.white,
+                                )),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(width: 1, color: Colors.white),
+                                ),
+                                labelText: 'Date of Birth',
+                                errorStyle:
+                                    TextStyle(color: Colors.red, fontSize: 10),
+                                errorBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    width: 1,
+                                    color: Color.fromARGB(255, 199, 78, 69),
+                                  ),
+                                ),
+                                labelStyle: TextStyle(color: Colors.white),
+                              ),
+                              readOnly: true,
+                              onTap: () {
+                                context
+                                    .read<DateSelectorBloc>()
+                                    .add(SelectDate(context: context));
+                              },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please select a date of birth.';
+                                }
+
+                                // Parse the selected date
+                                DateTime? selectedDate =
+                                    DateTime.tryParse(value);
+                                if (selectedDate == null) {
+                                  return 'Invalid date format.';
+                                }
+
+                                // Calculate the age
+                                DateTime today = DateTime.now();
+                                int age = today.year - selectedDate.year;
+                                if (today.month < selectedDate.month ||
+                                    (today.month == selectedDate.month &&
+                                        today.day < selectedDate.day)) {
+                                  age--; // Adjust for incomplete year
+                                }
+
+                                // Check if age is at least 16
+                                if (age < 16) {
+                                  return 'You must be at least 16 years old.';
+                                }
+
+                                return null; // Validation passed
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       child: Form(
                         key: _email,
@@ -328,6 +422,40 @@ class _SignupViewState extends State<SignupView> {
                     ),
                   ),
                   const Spacer(),
+                  Padding(
+                    padding: EdgeInsets.only(left: 4.w),
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Gender:',
+                          style: TextStyle(fontSize: 16.0),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 6.w),
+                          child: DropdownButton<String>(
+                            underline: null,
+                            hint: const Text(
+                              'Select Gender',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            value: gender,
+                            onChanged: (String? value) {
+                              setState(() {
+                                gender = value!;
+                              });
+                            },
+                            items: ['Male', 'Female']
+                                .map((gender) => DropdownMenuItem(
+                                      value: gender,
+                                      child: Text(gender),
+                                    ))
+                                .toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Spacer(),
                   BlocListener<LoginBloc, LoginState>(
                     listener: (context, state) {
                       if (state.status == Loginandregisterationstatus.failure) {
@@ -354,7 +482,9 @@ class _SignupViewState extends State<SignupView> {
                                     userName: u,
                                     email: e,
                                     password: p,
-                                    file: file));
+                                    file: file,
+                                    DOB: dataTime!,
+                                    gender: gender));
                               }
                             },
                             style: ElevatedButton.styleFrom(

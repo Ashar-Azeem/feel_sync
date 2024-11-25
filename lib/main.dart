@@ -4,7 +4,6 @@ import 'package:feel_sync/Services/AuthService.dart';
 import 'package:feel_sync/Utilities/Permissions.dart';
 import 'package:feel_sync/Views/MainUI.dart';
 import 'package:feel_sync/Views/login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
@@ -24,7 +23,7 @@ void main() async {
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 12, 138, 211),
             brightness: Brightness.dark),
-        scaffoldBackgroundColor: const Color.fromARGB(255, 3, 4, 10),
+        scaffoldBackgroundColor: const Color.fromARGB(255, 12, 15, 20),
         useMaterial3: true,
       ),
       initialRoute: RouteNames.initRoute,
@@ -47,7 +46,7 @@ class Main extends StatelessWidget {
           switch (snapshot.connectionState) {
             case ConnectionState.done:
               {
-                if (FirebaseAuth.instance.currentUser == null) {
+                if (AuthService().getUser() == null) {
                   return const LoginView();
                 } else {
                   return const MainUI();
