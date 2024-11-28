@@ -1,9 +1,11 @@
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:feel_sync/Services/AWS_StorageService.dart';
 import 'package:feel_sync/Services/AuthService.dart';
 import 'package:feel_sync/Services/CRUD.dart';
 import 'package:feel_sync/Services/Messaging.dart';
+import 'package:feel_sync/Utilities/Image.dart';
 import 'package:feel_sync/Utilities/LoginAndRegisterationStatus.dart';
 part 'login&Registration_event.dart';
 part 'login&Registration_state.dart';
@@ -42,16 +44,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         await AuthService()
             .createUser(email: event.email, password: event.password);
 
-        //Perform DataBase Tasks Here:
-        // if (file != null) {
-        //   file = await compressImage(file);
-        //   url = await uploadImageGetUrl(file, "profile", false);
-        // }
+        //Adding a profile picture
+        String? profile;
+
+        if (event.file != null) {
+          final compressedFile = await compressImage(event.file!);
+          profile = await uploadImageWithUUID(imageData: compressedFile);
+        }
+
+        //DataBase Tasks
         int age =
             (DateTime.now().difference(event.DOB).inDays / 365.25).toInt();
         String token = await Messaging().getFCMToken();
         await Crud().insertUser(AuthService().getUser()!.uid, event.fullName,
-            event.userName, "", token, age, event.gender);
+            event.userName, profile, token, age, event.gender);
 
         emit(state.copyWith(
             status: Loginandregisterationstatus.sucess, error: ""));

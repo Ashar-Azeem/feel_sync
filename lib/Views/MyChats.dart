@@ -39,7 +39,7 @@ class MyChatsView extends StatelessWidget {
                 ),
               ),
             ),
-          )
+          ),
         ],
       )),
     );

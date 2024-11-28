@@ -9,5 +9,5 @@ class ImagePickerState extends Equatable {
   }
 
   @override
-  List<Object> get props => [file!];
+  List<Object?> get props => [file];
 }

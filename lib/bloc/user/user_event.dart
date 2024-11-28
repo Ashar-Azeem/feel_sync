@@ -12,3 +12,5 @@ class FetchUser extends UserEvent {
 
   const FetchUser({required this.userId});
 }
+
+class ChangeProfilePicture extends UserEvent {}

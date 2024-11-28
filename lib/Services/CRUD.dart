@@ -47,4 +47,17 @@ class Crud {
       return false;
     }
   }
+
+  Future<bool> changeProfilePictureInDataBase(
+      {required String userId, required String profileLocation}) async {
+    try {
+      print(userId);
+      DocumentReference result = userCollection.doc(userId);
+      await result.update({"profileLocation": profileLocation});
+
+      return true;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }

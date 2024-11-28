@@ -1,3 +1,4 @@
+import 'package:feel_sync/CustomUI.dart';
 import 'package:feel_sync/Services/AuthService.dart';
 import 'package:feel_sync/Views/AnalysisView.dart';
 import 'package:feel_sync/Views/MyChats.dart';
@@ -8,6 +9,7 @@ import 'package:feel_sync/bloc/user/user_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+import 'package:sizer/sizer.dart';
 
 class MainUI extends StatefulWidget {
   const MainUI({super.key});
@@ -31,7 +33,7 @@ class _MainUIState extends State<MainUI> {
   void initState() {
     super.initState();
     userBloc = UserBloc();
-    _controller = PersistentTabController(initialIndex: 0);
+    _controller = PersistentTabController(initialIndex: 3);
   }
 
   List<Widget> _buildScreens() {
@@ -86,11 +88,18 @@ class _MainUIState extends State<MainUI> {
                   iconSize: 30,
                 ),
                 PersistentBottomNavBarItem(
-                  icon: const Icon(Icons.person),
-                  activeColorPrimary: Colors.white,
-                  activeColorSecondary: const Color.fromARGB(255, 8, 152, 204),
-                  iconSize: 30,
-                ),
+                    activeColorPrimary: const Color.fromARGB(255, 8, 152, 204),
+                    icon: BlocBuilder<UserBloc, UserState>(
+                      builder: (context, state) {
+                        return Padding(
+                          padding: EdgeInsets.only(bottom: 2.w),
+                          child: CustomAvatar(
+                            radius: 1.3.w,
+                            url: state.user!.profileLocation,
+                          ),
+                        );
+                      },
+                    )),
               ],
             );
           } else if (state.state == States.error) {

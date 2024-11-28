@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:feel_sync/Services/AuthService.dart';
 
 class User extends Equatable {
+  final String userId;
   final String name;
   final String userName;
   final String? bio;
@@ -11,7 +13,8 @@ class User extends Equatable {
   final String gender;
 
   const User(
-      {required this.name,
+      {required this.userId,
+      required this.name,
       required this.userName,
       this.bio,
       this.profileLocation,
@@ -26,7 +29,8 @@ class User extends Equatable {
       String? profileLocation,
       String? token,
       int? age,
-      String? gender}) {
+      String? gender,
+      String? userId}) {
     return User(
         name: name ?? this.name,
         userName: userName ?? this.userName,
@@ -34,11 +38,13 @@ class User extends Equatable {
         bio: bio ?? this.bio,
         profileLocation: profileLocation ?? this.profileLocation,
         age: age ?? this.age,
-        gender: gender ?? this.gender);
+        gender: gender ?? this.gender,
+        userId: userId ?? this.userId);
   }
 
   factory User.fromDocumentSnapshot(DocumentSnapshot result) {
     Map<String, dynamic> data = result.data() as Map<String, dynamic>;
+
     return User(
         name: data['name'] as String,
         userName: data['userName'] as String,
@@ -46,7 +52,8 @@ class User extends Equatable {
         profileLocation: data['profileLocation'] as String?,
         token: data['token'] as String,
         age: data['age'] as int,
-        gender: data['gender'] as String);
+        gender: data['gender'] as String,
+        userId: AuthService().getUser()!.uid);
   }
 
   @override
