@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:feel_sync/ReusableUI/ExploreViewTile.dart';
-import 'package:feel_sync/ReusableUI/ShimmerLoaderExploreView.dart';
+import 'package:feel_sync/Utilities/ReusableUI/ExploreViewTile.dart';
+import 'package:feel_sync/Utilities/ReusableUI/ShimmerLoaderExploreView.dart';
 import 'package:feel_sync/Models/user.dart';
 import 'package:feel_sync/Services/AuthService.dart';
 import 'package:feel_sync/bloc/ExploreUsers/explore_users_bloc.dart';

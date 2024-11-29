@@ -1,4 +1,4 @@
-import 'package:feel_sync/ReusableUI/CustomUI.dart';
+import 'package:feel_sync/Utilities/ReusableUI/CustomAvatar.dart';
 import 'package:feel_sync/Utilities/constants.dart';
 import 'package:feel_sync/Views/login.dart';
 import 'package:feel_sync/bloc/user/user_bloc.dart';

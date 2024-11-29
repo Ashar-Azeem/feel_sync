@@ -1,5 +1,5 @@
 import 'package:feel_sync/Routes/RouteNames.dart';
-import 'package:feel_sync/Utilities/ErrorMessage.dart';
+import 'package:feel_sync/Utilities/ReusableUI/ErrorMessage.dart';
 import 'package:feel_sync/Utilities/LoginAndRegisterationStatus.dart';
 import 'package:feel_sync/bloc/LoginBloc/login&Registration_bloc.dart';
 import 'package:feel_sync/bloc/PasswordBloc/password_visibility_bloc.dart';

@@ -5,7 +5,7 @@ import 'package:feel_sync/Services/AWS_StorageService.dart';
 import 'package:feel_sync/Services/AuthService.dart';
 import 'package:feel_sync/Services/CRUD.dart';
 import 'package:feel_sync/Services/Messaging.dart';
-import 'package:feel_sync/ReusableUI/Image.dart';
+import 'package:feel_sync/Utilities/Image.dart';
 import 'package:feel_sync/Utilities/LoginAndRegisterationStatus.dart';
 part 'login&Registration_event.dart';
 part 'login&Registration_state.dart';

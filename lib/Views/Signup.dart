@@ -1,6 +1,6 @@
 // ignore_for_file: file_names
 import 'package:feel_sync/Routes/RouteNames.dart';
-import 'package:feel_sync/Utilities/ErrorMessage.dart';
+import 'package:feel_sync/Utilities/ReusableUI/ErrorMessage.dart';
 import 'package:feel_sync/Utilities/LoginAndRegisterationStatus.dart';
 import 'package:feel_sync/bloc/DateSelector/date_selector_bloc.dart';
 import 'package:feel_sync/bloc/ImagePicker/image_picker_bloc.dart';
