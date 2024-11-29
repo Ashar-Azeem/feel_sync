@@ -1,4 +1,4 @@
-import 'package:feel_sync/CustomUI.dart';
+import 'package:feel_sync/ReusableUI/CustomUI.dart';
 import 'package:feel_sync/Services/AuthService.dart';
 import 'package:feel_sync/Views/AnalysisView.dart';
 import 'package:feel_sync/Views/MyChats.dart';
@@ -33,15 +33,15 @@ class _MainUIState extends State<MainUI> {
   void initState() {
     super.initState();
     userBloc = UserBloc();
-    _controller = PersistentTabController(initialIndex: 3);
+    _controller = PersistentTabController(initialIndex: 1);
   }
 
   List<Widget> _buildScreens() {
-    return const [
-      MyChatsView(),
+    return [
+      const MyChatsView(),
       UsersListView(),
-      Analysisview(),
-      ProfileView(),
+      const Analysisview(),
+      const ProfileView(),
     ];
   }
 
@@ -51,9 +51,10 @@ class _MainUIState extends State<MainUI> {
       providers: [BlocProvider(create: (_) => userBloc)],
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
-          context
-              .read<UserBloc>()
-              .add(FetchUser(userId: AuthService().getUser()!.uid));
+          final user = AuthService().getUser();
+          if (user != null) {
+            context.read<UserBloc>().add(FetchUser(userId: user.uid));
+          }
           if (state.state == States.done) {
             return PersistentTabView(
               backgroundColor: const Color.fromARGB(255, 12, 15, 20),

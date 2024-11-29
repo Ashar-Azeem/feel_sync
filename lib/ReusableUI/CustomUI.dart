@@ -13,6 +13,7 @@ class CustomAvatar extends StatelessWidget {
         width: radius.w * 2,
         height: radius.w * 2,
         decoration: const BoxDecoration(
+          color: Color.fromARGB(255, 34, 42, 55),
           shape: BoxShape.circle,
         ),
         child: url == null

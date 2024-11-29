@@ -6,7 +6,7 @@ class User extends Equatable {
   final String userId;
   final String name;
   final String userName;
-  final String? bio;
+  final String bio;
   final String? profileLocation;
   final String token;
   final int age;
@@ -16,7 +16,7 @@ class User extends Equatable {
       {required this.userId,
       required this.name,
       required this.userName,
-      this.bio,
+      required this.bio,
       this.profileLocation,
       required this.token,
       required this.age,
@@ -48,7 +48,7 @@ class User extends Equatable {
     return User(
         name: data['name'] as String,
         userName: data['userName'] as String,
-        bio: data['bio'] as String?,
+        bio: data['bio'] as String,
         profileLocation: data['profileLocation'] as String?,
         token: data['token'] as String,
         age: data['age'] as int,

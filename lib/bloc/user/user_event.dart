@@ -14,3 +14,27 @@ class FetchUser extends UserEvent {
 }
 
 class ChangeProfilePicture extends UserEvent {}
+
+class ChangeName extends UserEvent {
+  final BuildContext context;
+
+  const ChangeName({required this.context});
+}
+
+class ChangeUserName extends UserEvent {
+  final BuildContext context;
+
+  const ChangeUserName({required this.context});
+}
+
+class ChangeAboutSection extends UserEvent {
+  final BuildContext context;
+
+  const ChangeAboutSection({required this.context});
+}
+
+class LogOut extends UserEvent {
+  final BuildContext context;
+
+  const LogOut({required this.context});
+}

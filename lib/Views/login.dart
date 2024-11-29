@@ -152,7 +152,7 @@ class _LoginViewState extends State<LoginView> {
                               if (e.isNotEmpty && p.isNotEmpty) {
                                 context
                                     .read<LoginBloc>()
-                                    .add(Login(email: e, password: e));
+                                    .add(Login(email: e, password: p));
                               }
                             },
                             style: ElevatedButton.styleFrom(

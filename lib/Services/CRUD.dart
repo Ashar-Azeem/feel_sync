@@ -51,9 +51,48 @@ class Crud {
   Future<bool> changeProfilePictureInDataBase(
       {required String userId, required String profileLocation}) async {
     try {
-      print(userId);
       DocumentReference result = userCollection.doc(userId);
       await result.update({"profileLocation": profileLocation});
+
+      return true;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<bool> changeName(
+      {required String userId, required String newName}) async {
+    try {
+      DocumentReference result = userCollection.doc(userId);
+      await result.update({"name": newName});
+
+      return true;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<bool> changeUserName(
+      {required String userId, required String newUserName}) async {
+    try {
+      bool userNameCheck = await userNameExists(newUserName);
+      if (!userNameCheck) {
+        DocumentReference result = userCollection.doc(userId);
+        await result.update({"userName": newUserName});
+        return true;
+      } else {
+        throw Exception("User Already Exists");
+      }
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<bool> changeAboutSection(
+      {required String userId, required String newAbout}) async {
+    try {
+      DocumentReference result = userCollection.doc(userId);
+      await result.update({"bio": newAbout});
 
       return true;
     } catch (e) {

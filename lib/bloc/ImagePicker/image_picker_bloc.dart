@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:feel_sync/Utilities/Image.dart';
+import 'package:feel_sync/ReusableUI/Image.dart';
 import 'package:image_picker/image_picker.dart';
 
 part 'image_picker_event.dart';
