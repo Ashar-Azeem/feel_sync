@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:feel_sync/Models/user.dart';
-
 part 'explore_users_event.dart';
 part 'explore_users_state.dart';
 
@@ -19,7 +18,6 @@ class ExploreUsersBloc extends Bloc<ExploreUsersEvent, ExploreUsersState> {
 
     for (User user in listOfUsers) {
       if (!state.users.contains(user)) {
-        print(listOfUsers);
         emit(state.copyWith(users: listOfUsers));
       }
     }

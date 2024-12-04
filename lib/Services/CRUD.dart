@@ -16,6 +16,7 @@ class Crud {
         'token': token,
         'gender': gender,
         'age': age,
+        'compatibility': 0
       });
     } catch (e) {
       //

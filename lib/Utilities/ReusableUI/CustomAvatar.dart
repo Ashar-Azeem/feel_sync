@@ -18,7 +18,7 @@ class CustomAvatar extends StatelessWidget {
         ),
         child: url == null
             ? Image.asset(
-                'asset/blankprofile',
+                'asset/blankprofile.png',
                 fit: BoxFit.cover,
               )
             : Image.network(

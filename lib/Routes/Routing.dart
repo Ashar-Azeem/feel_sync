@@ -1,6 +1,8 @@
+import 'package:feel_sync/Models/user.dart';
 import 'package:feel_sync/Routes/RouteNames.dart';
 import 'package:feel_sync/Views/MainUI.dart';
 import 'package:feel_sync/Views/Signup.dart';
+import 'package:feel_sync/Views/VisitingUserView.dart';
 import 'package:feel_sync/Views/login.dart';
 import 'package:feel_sync/main.dart';
 
@@ -17,6 +19,14 @@ class Routes {
         return MaterialPageRoute(builder: (context) => const MainUI());
       case RouteNames.initRoute:
         return MaterialPageRoute(builder: (context) => const Main());
+      case RouteNames.visitingUserRoute:
+        print('hehehe');
+        User hostUser = settings.arguments as User;
+        print(hostUser);
+        return MaterialPageRoute(
+            builder: (context) => VisitingUserView(
+                  hostUser: hostUser,
+                ));
       default:
         return MaterialPageRoute(builder: (context) {
           return const Scaffold(

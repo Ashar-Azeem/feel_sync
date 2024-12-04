@@ -11,10 +11,12 @@ class User extends Equatable {
   final String token;
   final int age;
   final String gender;
+  final int compatibility;
 
   const User(
       {required this.userId,
       required this.name,
+      required this.compatibility,
       required this.userName,
       required this.bio,
       this.profileLocation,
@@ -30,7 +32,8 @@ class User extends Equatable {
       String? token,
       int? age,
       String? gender,
-      String? userId}) {
+      String? userId,
+      int? compatibility}) {
     return User(
         name: name ?? this.name,
         userName: userName ?? this.userName,
@@ -39,6 +42,7 @@ class User extends Equatable {
         profileLocation: profileLocation ?? this.profileLocation,
         age: age ?? this.age,
         gender: gender ?? this.gender,
+        compatibility: compatibility ?? this.compatibility,
         userId: userId ?? this.userId);
   }
 
@@ -53,10 +57,11 @@ class User extends Equatable {
         token: data['token'] as String,
         age: data['age'] as int,
         gender: data['gender'] as String,
+        compatibility: data['compatibility'] as int,
         userId: AuthService().getUser()!.uid);
   }
 
   @override
   List<Object?> get props =>
-      [name, userName, bio, profileLocation, token, age, gender];
+      [name, userName, bio, profileLocation, token, age, gender, compatibility];
 }
