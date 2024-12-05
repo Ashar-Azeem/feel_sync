@@ -100,4 +100,23 @@ class Crud {
       throw Exception(e.toString());
     }
   }
+
+  Future<List<User>> retreiveUsers(String userName) async {
+    try {
+      List<User> users = [];
+      QuerySnapshot data = await userCollection
+          .where('userName', isGreaterThanOrEqualTo: userName)
+          .where('userName', isLessThan: '${userName}z')
+          .get();
+
+      for (QueryDocumentSnapshot documentSnapshot in data.docs) {
+        User user = User.fromDocumentSnapshot(documentSnapshot);
+        users.add(user);
+      }
+      return users;
+    } catch (e) {
+      //
+    }
+    return [];
+  }
 }

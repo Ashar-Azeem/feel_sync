@@ -4,6 +4,7 @@ import 'package:feel_sync/Views/AnalysisView.dart';
 import 'package:feel_sync/Views/MyChats.dart';
 import 'package:feel_sync/Views/Profile.dart';
 import 'package:feel_sync/Views/Users.dart';
+import 'package:feel_sync/bloc/ExploreUsers/explore_users_bloc.dart';
 import 'package:feel_sync/bloc/user/user_bloc.dart';
 import 'package:feel_sync/bloc/user/user_state.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,7 @@ class _MainUIState extends State<MainUI> {
   List<Widget> _buildScreens() {
     return [
       const MyChatsView(),
-      UsersListView(),
+      const UsersListView(),
       const Analysisview(),
       const ProfileView(),
     ];
@@ -48,7 +49,10 @@ class _MainUIState extends State<MainUI> {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => userBloc)],
+      providers: [
+        BlocProvider(create: (_) => userBloc),
+        BlocProvider(create: (_) => ExploreUsersBloc())
+      ],
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
           final user = AuthService().getUser();

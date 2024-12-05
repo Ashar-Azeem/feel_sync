@@ -12,3 +12,11 @@ class FetchUsers extends ExploreUsersEvent {
 
   const FetchUsers({required this.snapshsot});
 }
+
+class Search extends ExploreUsersEvent {
+  final String query;
+
+  const Search({required this.query});
+}
+
+class SearchEnded extends ExploreUsersEvent {}
