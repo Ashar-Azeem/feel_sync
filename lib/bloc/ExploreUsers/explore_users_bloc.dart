@@ -19,35 +19,31 @@ class ExploreUsersBloc extends Bloc<ExploreUsersEvent, ExploreUsersState> {
       listOfUsers.add(User.fromDocumentSnapshot(d));
     }
 
-    for (User user in listOfUsers) {
-      if (!state.users.contains(user)) {
-        emit(state.copyWith(users: listOfUsers));
-      }
+    if (!utilityFunctions(listOfUsers)) {
+      emit(state.copyWith(users: listOfUsers));
     }
   }
 
   void searchUser(Search event, Emitter<ExploreUsersState> emit) async {
-    if (state.previousQuery != event.query) {
-      //Enables the list view for searching a specific user
-      emit(state.copyWith(searching: Searching.yes));
+    //Enables the list view for searching a specific user
+    emit(state.copyWith(searching: Searching.yes));
 
-      //First checking in the local cache
-      List<User> filteredUsers = state.users.where((user) {
-        return user.userName.compareTo(event.query) >= 0 &&
-            user.userName.compareTo('${event.query}z') < 0;
-      }).toList();
-      if (filteredUsers.isNotEmpty) {
-        emit(state.copyWith(searchedUser: List.from(filteredUsers)));
-      } else {
-        emit(state.copyWith(searchingState: SearchingState.loading));
-        await Crud().retreiveUsers(event.query).then((list) {
-          emit(state.copyWith(
-              searchedUser: List.from(list),
-              searchingState: SearchingState.done));
-        });
-      }
-
-      emit(state.copyWith(previousQuery: event.query));
+    //First checking in the local cache
+    List<User> filteredUsers = state.users.where((user) {
+      return user.userName.compareTo(event.query) >= 0 &&
+          user.userName.compareTo('${event.query}z') < 0;
+    }).toList();
+    if (filteredUsers.isNotEmpty && !utilityFunctions(filteredUsers)) {
+      emit(state.copyWith(
+          searchedUser: List.from(filteredUsers),
+          searchingState: SearchingState.done));
+    } else {
+      emit(state.copyWith(searchingState: SearchingState.loading));
+      await Crud().retreiveUsers(event.query).then((list) {
+        emit(state.copyWith(
+            searchedUser: List.from(list),
+            searchingState: SearchingState.done));
+      });
     }
   }
 
@@ -55,5 +51,14 @@ class ExploreUsersBloc extends Bloc<ExploreUsersEvent, ExploreUsersState> {
     if (state.searching == Searching.yes) {
       emit(state.copyWith(searching: Searching.no));
     }
+  }
+
+  bool utilityFunctions(List<User> newUsersList) {
+    for (User user in newUsersList) {
+      if (!state.users.contains(user)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

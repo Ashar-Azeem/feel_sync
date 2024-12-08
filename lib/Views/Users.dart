@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_sync/Utilities/ReusableUI/ExploreViewTile.dart';
 import 'package:feel_sync/Utilities/ReusableUI/ShimmerLoaderExploreView.dart';
@@ -26,19 +25,6 @@ class _UsersListViewState extends State<UsersListView> {
   void initState() {
     super.initState();
     search = TextEditingController();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _startTimer();
-    });
-  }
-
-  void _startTimer() {
-    timer = Timer.periodic(const Duration(milliseconds: 400), (timer) {
-      if (search.text.isEmpty) {
-        context.read<ExploreUsersBloc>().add(SearchEnded());
-      } else {
-        context.read<ExploreUsersBloc>().add(Search(query: search.text));
-      }
-    });
   }
 
   @override
@@ -92,8 +78,17 @@ class _UsersListViewState extends State<UsersListView> {
                   onTapOutside: (event) {
                     FocusManager.instance.primaryFocus?.unfocus();
                   },
+                  onChanged: (value) {
+                    if (search.text.isEmpty) {
+                      context.read<ExploreUsersBloc>().add(SearchEnded());
+                    } else {
+                      context
+                          .read<ExploreUsersBloc>()
+                          .add(Search(query: search.text));
+                    }
+                  },
                   cursorColor: Colors.white,
-                  enableSuggestions: false,
+                  enableSuggestions: true,
                   autocorrect: false,
                   controller: search,
                   decoration: InputDecoration(

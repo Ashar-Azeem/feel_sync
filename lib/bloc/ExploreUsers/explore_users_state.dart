@@ -5,11 +5,9 @@ class ExploreUsersState extends Equatable {
   final List<User> searchedUser;
   final Searching searching;
   final SearchingState searchingState;
-  final String previousQuery;
 
   const ExploreUsersState(
-      {this.previousQuery = '',
-      this.searchingState = SearchingState.done,
+      {this.searchingState = SearchingState.done,
       this.searching = Searching.no,
       this.searchedUser = const [],
       this.users = const []});
@@ -18,19 +16,17 @@ class ExploreUsersState extends Equatable {
       {List<User>? users,
       List<User>? searchedUser,
       Searching? searching,
-      SearchingState? searchingState,
-      String? previousQuery}) {
+      SearchingState? searchingState}) {
     return ExploreUsersState(
-        users: users ?? this.users,
-        searchedUser: searchedUser ?? this.searchedUser,
-        searching: searching ?? this.searching,
-        searchingState: searchingState ?? this.searchingState,
-        previousQuery: previousQuery ?? this.previousQuery);
+      users: users ?? this.users,
+      searchedUser: searchedUser ?? this.searchedUser,
+      searching: searching ?? this.searching,
+      searchingState: searchingState ?? this.searchingState,
+    );
   }
 
   @override
-  List<Object> get props =>
-      [users, searchedUser, searching, searchingState, previousQuery];
+  List<Object> get props => [users, searchedUser, searching, searchingState];
 }
 
 enum Searching { yes, no }
