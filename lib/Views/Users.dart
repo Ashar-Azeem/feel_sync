@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_sync/Utilities/ReusableUI/ExploreViewTile.dart';
 import 'package:feel_sync/Utilities/ReusableUI/ShimmerLoaderExploreView.dart';
@@ -20,7 +19,6 @@ class UsersListView extends StatefulWidget {
 
 class _UsersListViewState extends State<UsersListView> {
   late TextEditingController search;
-  late Timer timer;
   @override
   void initState() {
     super.initState();

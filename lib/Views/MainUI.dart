@@ -4,6 +4,7 @@ import 'package:feel_sync/Views/AnalysisView.dart';
 import 'package:feel_sync/Views/MyChats.dart';
 import 'package:feel_sync/Views/Profile.dart';
 import 'package:feel_sync/Views/Users.dart';
+import 'package:feel_sync/bloc/ChatsBloc/chats_bloc.dart';
 import 'package:feel_sync/bloc/ExploreUsers/explore_users_bloc.dart';
 import 'package:feel_sync/bloc/user/user_bloc.dart';
 import 'package:feel_sync/bloc/user/user_state.dart';
@@ -20,12 +21,10 @@ class MainUI extends StatefulWidget {
 }
 
 class _MainUIState extends State<MainUI> {
-  late UserBloc userBloc;
   late PersistentTabController _controller;
 
   @override
   void dispose() {
-    userBloc.close();
     _controller.dispose();
     super.dispose();
   }
@@ -33,8 +32,7 @@ class _MainUIState extends State<MainUI> {
   @override
   void initState() {
     super.initState();
-    userBloc = UserBloc();
-    _controller = PersistentTabController(initialIndex: 1);
+    _controller = PersistentTabController(initialIndex: 0);
   }
 
   List<Widget> _buildScreens() {
@@ -50,8 +48,9 @@ class _MainUIState extends State<MainUI> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => userBloc),
-        BlocProvider(create: (_) => ExploreUsersBloc())
+        BlocProvider(create: (_) => UserBloc()),
+        BlocProvider(create: (_) => ExploreUsersBloc()),
+        BlocProvider(create: (_) => ChatsBloc())
       ],
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
