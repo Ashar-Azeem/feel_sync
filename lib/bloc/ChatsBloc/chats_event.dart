@@ -7,8 +7,15 @@ abstract class ChatsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchChats extends ChatsEvent {
+class CacheChats extends ChatsEvent {
   final List<DocumentSnapshot<Object?>> snapshsot;
 
-  const FetchChats({required this.snapshsot});
+  const CacheChats({required this.snapshsot});
+}
+
+class FetchChat extends ChatsEvent {
+  final User ownerUser;
+  final User otherUser;
+
+  const FetchChat({required this.ownerUser, required this.otherUser});
 }

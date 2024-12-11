@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:feel_sync/Services/AuthService.dart';
 
 class User extends Equatable {
   final String userId;
@@ -58,7 +57,7 @@ class User extends Equatable {
         age: data['age'] as int,
         gender: data['gender'] as String,
         compatibility: data['compatibility'] as int,
-        userId: AuthService().getUser()!.uid);
+        userId: result.id);
   }
 
   @override

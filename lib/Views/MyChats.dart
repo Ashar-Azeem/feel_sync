@@ -118,6 +118,7 @@ class _MyChatsViewState extends State<MyChatsView> {
                       strokeCap: StrokeCap.round,
                     ),
                   ),
+                  isLive: true,
                   onEmpty: const Center(
                     child: Text('No Chats Available'),
                   ),
@@ -135,7 +136,7 @@ class _MyChatsViewState extends State<MyChatsView> {
                   itemBuilder: (context, snapshot, index) {
                     context
                         .read<ChatsBloc>()
-                        .add(FetchChats(snapshsot: snapshot));
+                        .add(CacheChats(snapshsot: snapshot));
                     final Chat chat =
                         Chat.fromDocumentSnapshot(snapshot.elementAt(index));
                     return ChatsViewTile(chat: chat);

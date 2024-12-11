@@ -5,8 +5,12 @@ class ChatsState extends Equatable {
   final List<Chat> searchedChat;
   final Searching searching;
   final SearchingState searchingState;
+  final Chat? chat;
+  final FindingChatStatus findingChatStatus;
   const ChatsState(
-      {this.searchingState = SearchingState.done,
+      {this.findingChatStatus = FindingChatStatus.done,
+      this.chat,
+      this.searchingState = SearchingState.done,
       this.searching = Searching.no,
       this.searchedChat = const [],
       this.chats = const []});
@@ -15,19 +19,25 @@ class ChatsState extends Equatable {
       {List<Chat>? chats,
       List<Chat>? searchedChat,
       Searching? searching,
-      SearchingState? searchingState}) {
+      SearchingState? searchingState,
+      Chat? chat,
+      FindingChatStatus? findingChatStatus}) {
     return ChatsState(
-      chats: chats ?? this.chats,
-      searchedChat: searchedChat ?? this.searchedChat,
-      searching: searching ?? this.searching,
-      searchingState: searchingState ?? this.searchingState,
-    );
+        chats: chats ?? this.chats,
+        searchedChat: searchedChat ?? this.searchedChat,
+        searching: searching ?? this.searching,
+        searchingState: searchingState ?? this.searchingState,
+        chat: chat ?? this.chat,
+        findingChatStatus: findingChatStatus ?? this.findingChatStatus);
   }
 
   @override
-  List<Object> get props => [chats, searchedChat, searching, searchingState];
+  List<Object?> get props =>
+      [chats, searchedChat, searching, searchingState, chat, findingChatStatus];
 }
 
 enum Searching { yes, no }
 
 enum SearchingState { loading, done }
+
+enum FindingChatStatus { loading, done }

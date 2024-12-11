@@ -3,7 +3,9 @@ import 'package:feel_sync/Utilities/ReusableUI/ExploreViewTile.dart';
 import 'package:feel_sync/Utilities/ReusableUI/ShimmerLoaderExploreView.dart';
 import 'package:feel_sync/Models/user.dart';
 import 'package:feel_sync/Services/AuthService.dart';
+import 'package:feel_sync/bloc/ChatsBloc/chats_bloc.dart' as chatsBloc;
 import 'package:feel_sync/bloc/ExploreUsers/explore_users_bloc.dart';
+import 'package:feel_sync/bloc/user/user_bloc.dart';
 import 'package:firebase_pagination/firebase_pagination.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -131,10 +133,19 @@ class _UsersListViewState extends State<UsersListView> {
                   itemBuilder: (context, snapshot, index) {
                     context
                         .read<ExploreUsersBloc>()
-                        .add(FetchUsers(snapshsot: snapshot));
+                        .add(Cache(snapshsot: snapshot));
                     final User user =
                         User.fromDocumentSnapshot(snapshot.elementAt(index));
-                    return ExploreViewTile(user: user);
+                    return ExploreViewTile(
+                      user: user,
+                      onMessagePressed: () {
+                        final userBlocState = context.read<UserBloc>().state;
+                        context.read<chatsBloc.ChatsBloc>().add(
+                            chatsBloc.FetchChat(
+                                ownerUser: userBlocState.user!,
+                                otherUser: user));
+                      },
+                    );
                   },
                 );
               } else {
@@ -147,8 +158,17 @@ class _UsersListViewState extends State<UsersListView> {
                           shrinkWrap: true,
                           itemCount: state.searchedUser.length,
                           itemBuilder: (context, index) {
+                            final user = state.searchedUser[index];
                             return ExploreViewTile(
-                              user: state.searchedUser[index],
+                              user: user,
+                              onMessagePressed: () {
+                                final userBlocState =
+                                    context.read<UserBloc>().state;
+                                context.read<chatsBloc.ChatsBloc>().add(
+                                    chatsBloc.FetchChat(
+                                        ownerUser: userBlocState.user!,
+                                        otherUser: user));
+                              },
                             );
                           },
                         );

@@ -7,10 +7,10 @@ abstract class ExploreUsersEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchUsers extends ExploreUsersEvent {
+class Cache extends ExploreUsersEvent {
   final List<DocumentSnapshot<Object?>> snapshsot;
 
-  const FetchUsers({required this.snapshsot});
+  const Cache({required this.snapshsot});
 }
 
 class Search extends ExploreUsersEvent {

@@ -8,18 +8,18 @@ part 'explore_users_state.dart';
 
 class ExploreUsersBloc extends Bloc<ExploreUsersEvent, ExploreUsersState> {
   ExploreUsersBloc() : super(const ExploreUsersState()) {
-    on<FetchUsers>(fetchUsers);
+    on<Cache>(fetchUsers);
     on<Search>(searchUser);
     on<SearchEnded>(searchEnded);
   }
 
-  void fetchUsers(FetchUsers event, Emitter<ExploreUsersState> emit) {
+  void fetchUsers(Cache event, Emitter<ExploreUsersState> emit) {
     List<User> listOfUsers = [];
     for (DocumentSnapshot d in event.snapshsot) {
       listOfUsers.add(User.fromDocumentSnapshot(d));
     }
 
-    if (!utilityFunctions(listOfUsers)) {
+    if (utilityFunction(listOfUsers)) {
       emit(state.copyWith(users: listOfUsers));
     }
   }
@@ -33,7 +33,7 @@ class ExploreUsersBloc extends Bloc<ExploreUsersEvent, ExploreUsersState> {
       return user.userName.compareTo(event.query) >= 0 &&
           user.userName.compareTo('${event.query}z') < 0;
     }).toList();
-    if (filteredUsers.isNotEmpty && !utilityFunctions(filteredUsers)) {
+    if (filteredUsers.isNotEmpty && !checkInSearchedUsers(filteredUsers)) {
       emit(state.copyWith(
           searchedUser: List.from(filteredUsers),
           searchingState: SearchingState.done));
@@ -53,9 +53,18 @@ class ExploreUsersBloc extends Bloc<ExploreUsersEvent, ExploreUsersState> {
     }
   }
 
-  bool utilityFunctions(List<User> newUsersList) {
+  bool utilityFunction(List<User> newUsersList) {
     for (User user in newUsersList) {
       if (!state.users.contains(user)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool checkInSearchedUsers(List<User> newUsersList) {
+    for (User user in newUsersList) {
+      if (!state.searchedUser.contains(user)) {
         return true;
       }
     }

@@ -7,7 +7,9 @@ import 'package:sizer/sizer.dart';
 
 class ExploreViewTile extends StatelessWidget {
   final User user;
-  const ExploreViewTile({super.key, required this.user});
+  final VoidCallback onMessagePressed;
+  const ExploreViewTile(
+      {super.key, required this.user, required this.onMessagePressed});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +71,7 @@ class ExploreViewTile extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(left: 2.w),
                 child: IconButton(
-                    onPressed: () {},
+                    onPressed: onMessagePressed,
                     icon: const Icon(
                       Icons.message_outlined,
                       color: Colors.white,
