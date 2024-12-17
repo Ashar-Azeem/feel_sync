@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:feel_sync/EmotionDetector/EmotionDetectionManager.dart';
 import 'package:feel_sync/Models/user.dart';
 
 class UserState extends Equatable {
@@ -9,6 +10,7 @@ class UserState extends Equatable {
   final UserNameStates userNameState;
   final AboutSectionStates aboutSectionState;
   final LogOutState logOutState;
+  final EmotionDetectionManager? edm;
 
   const UserState(
       {this.logOutState = LogOutState.no,
@@ -17,7 +19,8 @@ class UserState extends Equatable {
       this.nameState = NameStates.done,
       this.user,
       this.state = States.loading,
-      this.profileState = ProfileState.done});
+      this.profileState = ProfileState.done,
+      this.edm});
 
   UserState copyWith(
       {User? user,
@@ -26,7 +29,8 @@ class UserState extends Equatable {
       UserNameStates? userNameState,
       NameStates? nameState,
       AboutSectionStates? aboutSectionState,
-      LogOutState? logOutState}) {
+      LogOutState? logOutState,
+      EmotionDetectionManager? edm}) {
     return UserState(
         user: user ?? this.user,
         state: state ?? this.state,
@@ -34,7 +38,8 @@ class UserState extends Equatable {
         userNameState: userNameState ?? this.userNameState,
         nameState: nameState ?? this.nameState,
         aboutSectionState: aboutSectionState ?? this.aboutSectionState,
-        logOutState: logOutState ?? this.logOutState);
+        logOutState: logOutState ?? this.logOutState,
+        edm: edm ?? this.edm);
   }
 
   @override
@@ -45,7 +50,8 @@ class UserState extends Equatable {
         nameState,
         userNameState,
         aboutSectionState,
-        logOutState
+        logOutState,
+        edm
       ];
 }
 

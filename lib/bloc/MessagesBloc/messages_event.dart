@@ -20,7 +20,7 @@ class DisposeSeen extends MessagesEvent {}
 
 class SendMessage extends MessagesEvent {
   final String messageText;
-  final Chat chat;
+  final EmotionDetectionManager edm;
 
-  const SendMessage({required this.messageText, required this.chat});
+  const SendMessage({required this.edm, required this.messageText});
 }

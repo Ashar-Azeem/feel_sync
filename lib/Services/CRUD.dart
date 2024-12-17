@@ -7,6 +7,8 @@ class Crud {
       FirebaseFirestore.instance.collection('users');
   CollectionReference chatCollection =
       FirebaseFirestore.instance.collection('chats');
+  CollectionReference messageCollection =
+      FirebaseFirestore.instance.collection('messages');
 
   Future<void> insertUser(String userId, String name, String userName,
       String? profileLocation, String token, int age, String gender) async {
@@ -123,24 +125,21 @@ class Crud {
     return [];
   }
 
-  Future<Chat> createChat({
-    required User ownerUser,
-    required User otherUser,
-  }) async {
+  Future<Chat> createChat({required Chat demoChat}) async {
     try {
       // Reference to the Firestore collection
       final chatCollection = FirebaseFirestore.instance.collection('chats');
 
       // Prepare the data to be added
       final chatData = {
-        'user1UserId': ownerUser.userId,
-        'user1UserName': ownerUser.userName,
-        'user1FCMToken': ownerUser.token,
-        'user1ProfileLoc': ownerUser.profileLocation,
-        'user2UserId': otherUser.userId,
-        'user2UserName': otherUser.userName,
-        'user2FCMToken': otherUser.token,
-        'user2ProfileLoc': otherUser.profileLocation,
+        'user1UserId': demoChat.user1UserId,
+        'user1UserName': demoChat.user1UserName,
+        'user1FCMToken': demoChat.user1FCMToken,
+        'user1ProfileLoc': demoChat.user1ProfileLoc,
+        'user2UserId': demoChat.user2UserId,
+        'user2UserName': demoChat.user2UserName,
+        'user2FCMToken': demoChat.user2FCMToken,
+        'user2ProfileLoc': demoChat.user2ProfileLoc,
         'user1Seen': false,
         'user2Seen': false,
         'compatibility': 0,
@@ -167,14 +166,14 @@ class Crud {
       // Return a Chat object without fetching it
       Chat chat = Chat(
         chatId: docRef.id, // Use the document ID directly
-        user1UserId: ownerUser.userId,
-        user1UserName: ownerUser.userName,
-        user1FCMToken: ownerUser.token,
-        user1ProfileLoc: ownerUser.profileLocation,
-        user2UserId: otherUser.userId,
-        user2UserName: otherUser.userName,
-        user2FCMToken: otherUser.token,
-        user2ProfileLoc: otherUser.profileLocation,
+        user1UserId: demoChat.user1UserId,
+        user1UserName: demoChat.user1UserName,
+        user1FCMToken: demoChat.user1FCMToken,
+        user1ProfileLoc: demoChat.user1ProfileLoc,
+        user2UserId: demoChat.user2UserId,
+        user2UserName: demoChat.user2UserName,
+        user2FCMToken: demoChat.user2FCMToken,
+        user2ProfileLoc: demoChat.user2ProfileLoc,
         user1Seen: false,
         user2Seen: false,
         compatibility: 0,
@@ -239,6 +238,66 @@ class Crud {
       return chatToBeReturned;
     } else {
       return chat;
+    }
+  }
+
+  Future<Chat> insertMessage(
+      String senderUserId,
+      String receiverUserId,
+      Chat demoChat,
+      String content,
+      DateTime time,
+      String emotionKey,
+      int receiverNumber) async {
+    if (demoChat.chatId == null) {
+      demoChat = await createChat(demoChat: demoChat);
+    }
+
+    await messageCollection.add({
+      'chatId': demoChat.chatId,
+      'senderUserId': senderUserId,
+      'receiverUserId': receiverUserId,
+      'content': content,
+      'time':
+          Timestamp.fromDate(time), // Convert DateTime to Firestore Timestamp
+    });
+
+    await updateChat(
+        chatId: demoChat.chatId!,
+        emotionKey: emotionKey,
+        receiverNumber: receiverNumber,
+        lastMessage: content);
+
+    return demoChat;
+  }
+
+  Future<void> updateChat(
+      {required String chatId,
+      required String emotionKey,
+      required int receiverNumber,
+      required String lastMessage}) async {
+    try {
+      // Reference to the specific chat document
+      final DocumentReference chatDoc =
+          FirebaseFirestore.instance.collection('chats').doc(chatId);
+      if (receiverNumber == 1) {
+        await chatDoc.update({
+          'user${2}Emotions.$emotionKey':
+              FieldValue.increment(1), // Update the sender userEmotions map
+
+          'user${receiverNumber}Seen': false,
+          'lastMessage': lastMessage
+        });
+      } else {
+        await chatDoc.update({
+          'user${1}Emotions.$emotionKey':
+              FieldValue.increment(1), // Update the sender userEmotions map
+          'user${receiverNumber}Seen': false,
+          'lastMessage': lastMessage
+        });
+      }
+    } catch (e) {
+//
     }
   }
 }

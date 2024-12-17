@@ -2,6 +2,7 @@
 import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:feel_sync/EmotionDetector/EmotionDetectionManager.dart';
 import 'package:feel_sync/Models/user.dart';
 import 'package:feel_sync/Services/AWS_StorageService.dart';
 import 'package:feel_sync/Services/AuthService.dart';
@@ -27,7 +28,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   void fetchUser(FetchUser event, Emitter<UserState> emit) async {
     try {
       User user = await Crud().getUser(event.userId) as User;
-      emit(state.copyWith(user: user, state: States.done));
+      final edm = EmotionDetectionManager();
+      edm.initialize();
+      emit(state.copyWith(user: user, state: States.done, edm: edm));
     } catch (e) {
       emit(state.copyWith(state: States.error));
     }

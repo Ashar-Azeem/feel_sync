@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:feel_sync/EmotionDetector/EmotionDetectionManager.dart';
 import 'package:feel_sync/Models/Chat.dart';
 import 'package:feel_sync/Models/user.dart';
 import 'package:feel_sync/Services/CRUD.dart';
@@ -13,6 +14,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   MessagesBloc() : super(const MessagesState()) {
     on<SeenChecker>(seenChecker);
     on<InitChat>(initChat);
+    on<SendMessage>(sendMessage);
     on<DisposeSeen>(disposeSeen);
   }
 
@@ -37,6 +39,29 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
           });
         });
       }
+    });
+  }
+
+  void sendMessage(SendMessage event, Emitter<MessagesState> emit) async {
+    emit(state.copyWith(sendMessageLoading: true));
+
+    String emotionKey = await event.edm.detectEmotion(event.messageText);
+    String senderId;
+    String receiverId;
+
+    if (state.receiverNumber == 1) {
+      senderId = state.chat!.user2UserId;
+      receiverId = state.chat!.user1UserId;
+    } else {
+      senderId = state.chat!.user1UserId;
+      receiverId = state.chat!.user2UserId;
+    }
+
+    await Crud()
+        .insertMessage(senderId, receiverId, state.chat!, event.messageText,
+            DateTime.now(), emotionKey, state.receiverNumber)
+        .then((chat) {
+      emit(state.copyWith(chat: chat, sendMessageLoading: false));
     });
   }
 

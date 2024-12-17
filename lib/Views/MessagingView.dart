@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:feel_sync/EmotionDetector/EmotionDetectionManager.dart';
 import 'package:feel_sync/Models/Message.dart';
 import 'package:feel_sync/Utilities/ReusableUI/CustomAvatar.dart';
 import 'package:feel_sync/bloc/MessagesBloc/messages_bloc.dart';
@@ -21,12 +22,14 @@ class MessagingView extends StatefulWidget {
 class _MessagingViewState extends State<MessagingView> {
   Message? currentMessage;
   Message? previousMessage;
+  late EmotionDetectionManager edm;
   TextEditingController message = TextEditingController();
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MessagesBloc>().add(SeenChecker());
+      edm = context.read<UserBloc>().state.edm!;
     });
   }
 
@@ -442,8 +445,7 @@ class _MessagingViewState extends State<MessagingView> {
                               onPressed: () {
                                 if (message.text.isNotEmpty) {
                                   context.read<MessagesBloc>().add(SendMessage(
-                                      messageText: message.text,
-                                      chat: state.chat!));
+                                      messageText: message.text, edm: edm));
                                 }
                               },
                               child: state.sendMessageLoading
