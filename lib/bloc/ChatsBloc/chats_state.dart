@@ -20,14 +20,14 @@ class ChatsState extends Equatable {
       List<Chat>? searchedChat,
       Searching? searching,
       SearchingState? searchingState,
-      Chat? chat,
+      Chat? chat1,
       FindingChatStatus? findingChatStatus}) {
     return ChatsState(
         chats: chats ?? this.chats,
         searchedChat: searchedChat ?? this.searchedChat,
         searching: searching ?? this.searching,
         searchingState: searchingState ?? this.searchingState,
-        chat: chat ?? this.chat,
+        chat: chat1,
         findingChatStatus: findingChatStatus ?? this.findingChatStatus);
   }
 

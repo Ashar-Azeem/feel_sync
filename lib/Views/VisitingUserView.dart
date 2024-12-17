@@ -1,6 +1,7 @@
 import 'package:feel_sync/Models/user.dart';
 import 'package:feel_sync/Utilities/ReusableUI/CustomAvatar.dart';
 import 'package:feel_sync/Utilities/constants.dart';
+import 'package:feel_sync/bloc/ChatsBloc/chats_bloc.dart';
 import 'package:feel_sync/bloc/user/user_bloc.dart';
 import 'package:feel_sync/bloc/user/user_state.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +62,12 @@ class VisitingUserView extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(right: 3.w),
                 child: IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      final userBlocState = context.read<UserBloc>().state;
+                      //This Fetches the chat from the server or the cache
+                      context.read<ChatsBloc>().add(FetchChat(
+                          ownerUser: userBlocState.user!, otherUser: hostUser));
+                    },
                     icon: const Icon(
                       Icons.message,
                       color: Colors.blue,

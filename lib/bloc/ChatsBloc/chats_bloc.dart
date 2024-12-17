@@ -11,6 +11,7 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
   ChatsBloc() : super(const ChatsState()) {
     on<CacheChats>(cacheChats);
     on<FetchChat>(fetchChat);
+    on<DisposeChatSelected>(disposeChat);
   }
 
   void cacheChats(CacheChats event, Emitter<ChatsState> emit) {
@@ -34,23 +35,54 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
               chat.user2UserId == event.ownerUser.userId));
     }).toList();
     if (filteredChats.isNotEmpty) {
-      emit(state.copyWith(chat: filteredChats[0]));
+      print("in filtered");
+      emit(state.copyWith(chat1: filteredChats[0]));
     } else {
       await Crud().getChat(event.ownerUser, event.otherUser).then((chat) async {
         if (chat != null) {
+          print("Retreived from the database");
           emit(state.copyWith(
-              chat: chat, findingChatStatus: FindingChatStatus.done));
+              chat1: chat, findingChatStatus: FindingChatStatus.done));
         } else {
-          await Crud()
-              .createChat(
-                  ownerUser: event.ownerUser, otherUser: event.otherUser)
-              .then((chat) {
-            emit(state.copyWith(
-                chat: chat, findingChatStatus: FindingChatStatus.done));
-          });
+          Chat demoChat = Chat(
+              chatId: null,
+              user1UserId: event.ownerUser.userId,
+              user1UserName: event.ownerUser.userName,
+              user1FCMToken: event.ownerUser.token,
+              user1ProfileLoc: event.ownerUser.profileLocation,
+              user2UserId: event.otherUser.userId,
+              user2UserName: event.otherUser.userName,
+              user2FCMToken: event.otherUser.token,
+              user2ProfileLoc: event.otherUser.profileLocation,
+              user1Seen: false,
+              user2Seen: false,
+              compatibility: 0,
+              user1Emotions: const {
+                'Sadness': 0,
+                'Joy': 0,
+                'Love': 0,
+                'Anger': 0,
+                'Fear': 0
+              },
+              user2Emotions: const {
+                'Sadness': 0,
+                'Joy': 0,
+                'Love': 0,
+                'Anger': 0,
+                'Fear': 0
+              },
+              lastMessage: '');
+          print("making a demo chat");
+          emit(state.copyWith(
+              findingChatStatus: FindingChatStatus.done, chat1: demoChat));
         }
       });
     }
+  }
+
+  void disposeChat(DisposeChatSelected event, Emitter<ChatsState> emit) {
+    print("Disposing chats");
+    emit(state.copyWith(chat1: null));
   }
 
 //Utility Functions:

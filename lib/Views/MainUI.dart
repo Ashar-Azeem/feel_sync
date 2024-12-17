@@ -6,6 +6,7 @@ import 'package:feel_sync/Views/Profile.dart';
 import 'package:feel_sync/Views/Users.dart';
 import 'package:feel_sync/bloc/ChatsBloc/chats_bloc.dart';
 import 'package:feel_sync/bloc/ExploreUsers/explore_users_bloc.dart';
+import 'package:feel_sync/bloc/MessagesBloc/messages_bloc.dart';
 import 'package:feel_sync/bloc/user/user_bloc.dart';
 import 'package:feel_sync/bloc/user/user_state.dart';
 import 'package:flutter/material.dart';
@@ -50,7 +51,8 @@ class _MainUIState extends State<MainUI> {
       providers: [
         BlocProvider(create: (_) => UserBloc()),
         BlocProvider(create: (_) => ExploreUsersBloc()),
-        BlocProvider(create: (_) => ChatsBloc())
+        BlocProvider(create: (_) => ChatsBloc()),
+        BlocProvider(create: (_) => MessagesBloc())
       ],
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
@@ -60,6 +62,7 @@ class _MainUIState extends State<MainUI> {
           }
           if (state.state == States.done) {
             return PersistentTabView(
+              stateManagement: true,
               backgroundColor: const Color.fromARGB(255, 12, 15, 20),
               hideNavigationBarWhenKeyboardAppears: true,
               context,

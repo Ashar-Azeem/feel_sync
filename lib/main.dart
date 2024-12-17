@@ -14,11 +14,15 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      systemNavigationBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: Color.fromARGB(255, 6, 6, 14)));
   await requestNotificationPermission();
 
   runApp(Sizer(builder: (context, orientation, screenType) {
     return MaterialApp(
       title: 'FeelSync',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color.fromARGB(255, 12, 138, 211),

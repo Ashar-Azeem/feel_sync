@@ -19,3 +19,5 @@ class FetchChat extends ChatsEvent {
 
   const FetchChat({required this.ownerUser, required this.otherUser});
 }
+
+class DisposeChatSelected extends ChatsEvent {}

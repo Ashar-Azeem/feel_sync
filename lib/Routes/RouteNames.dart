@@ -4,4 +4,5 @@ class RouteNames {
   static const mainUI = "mainUI";
   static const initRoute = "initRoute";
   static const visitingUserRoute = "visitigUserRoute";
+  static const messagingView = "messagingView";
 }

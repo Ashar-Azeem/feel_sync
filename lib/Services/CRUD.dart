@@ -231,4 +231,14 @@ class Crud {
       return null;
     }
   }
+
+  Future<Chat> getChatById(Chat chat) async {
+    DocumentSnapshot result = await chatCollection.doc(chat.chatId).get();
+    if (result.exists) {
+      Chat chatToBeReturned = Chat.fromDocumentSnapshot(result);
+      return chatToBeReturned;
+    } else {
+      return chat;
+    }
+  }
 }

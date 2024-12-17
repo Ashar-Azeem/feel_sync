@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 class Chat extends Equatable {
-  final String chatId;
+  final String? chatId;
   final String user1UserId;
   final String user1UserName;
   final String user1FCMToken;
@@ -92,6 +92,13 @@ class Chat extends Equatable {
       user2Emotions: Map<String, int>.from(data['user2Emotions']),
       lastMessage: data['lastMessage'] as String,
     );
+  }
+  String? getUserId(int receiverNumber) {
+    if (receiverNumber == 1) {
+      return user1UserId;
+    } else {
+      return user2UserId;
+    }
   }
 
   @override
