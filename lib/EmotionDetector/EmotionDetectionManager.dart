@@ -27,4 +27,8 @@ class EmotionDetectionManager {
     // Predict emotion
     return _emotionPredictor.predict(tfidfVector);
   }
+
+  void dispose() {
+    _emotionPredictor.dispose();
+  }
 }

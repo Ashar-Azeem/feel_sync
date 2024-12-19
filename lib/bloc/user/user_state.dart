@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:feel_sync/EmotionDetector/EmotionDetectionManager.dart';
 import 'package:feel_sync/Models/user.dart';
 
 class UserState extends Equatable {
@@ -10,36 +9,35 @@ class UserState extends Equatable {
   final UserNameStates userNameState;
   final AboutSectionStates aboutSectionState;
   final LogOutState logOutState;
-  final EmotionDetectionManager? edm;
 
-  const UserState(
-      {this.logOutState = LogOutState.no,
-      this.userNameState = UserNameStates.done,
-      this.aboutSectionState = AboutSectionStates.done,
-      this.nameState = NameStates.done,
-      this.user,
-      this.state = States.loading,
-      this.profileState = ProfileState.done,
-      this.edm});
+  const UserState({
+    this.logOutState = LogOutState.no,
+    this.userNameState = UserNameStates.done,
+    this.aboutSectionState = AboutSectionStates.done,
+    this.nameState = NameStates.done,
+    this.user,
+    this.state = States.loading,
+    this.profileState = ProfileState.done,
+  });
 
-  UserState copyWith(
-      {User? user,
-      States? state,
-      ProfileState? profileState,
-      UserNameStates? userNameState,
-      NameStates? nameState,
-      AboutSectionStates? aboutSectionState,
-      LogOutState? logOutState,
-      EmotionDetectionManager? edm}) {
+  UserState copyWith({
+    User? user,
+    States? state,
+    ProfileState? profileState,
+    UserNameStates? userNameState,
+    NameStates? nameState,
+    AboutSectionStates? aboutSectionState,
+    LogOutState? logOutState,
+  }) {
     return UserState(
-        user: user ?? this.user,
-        state: state ?? this.state,
-        profileState: profileState ?? this.profileState,
-        userNameState: userNameState ?? this.userNameState,
-        nameState: nameState ?? this.nameState,
-        aboutSectionState: aboutSectionState ?? this.aboutSectionState,
-        logOutState: logOutState ?? this.logOutState,
-        edm: edm ?? this.edm);
+      user: user ?? this.user,
+      state: state ?? this.state,
+      profileState: profileState ?? this.profileState,
+      userNameState: userNameState ?? this.userNameState,
+      nameState: nameState ?? this.nameState,
+      aboutSectionState: aboutSectionState ?? this.aboutSectionState,
+      logOutState: logOutState ?? this.logOutState,
+    );
   }
 
   @override
@@ -51,7 +49,6 @@ class UserState extends Equatable {
         userNameState,
         aboutSectionState,
         logOutState,
-        edm
       ];
 }
 

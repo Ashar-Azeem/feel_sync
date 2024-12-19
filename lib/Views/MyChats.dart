@@ -98,6 +98,18 @@ class _MyChatsViewState extends State<MyChatsView> {
             ),
           ),
           SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.only(left: 2.w, bottom: 4.w),
+              child: Text(
+                "Messages",
+                style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 4.3.w,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
               child: BlocBuilder<ChatsBloc, ChatsState>(
             buildWhen: (previous, current) {
               if (previous.searchedChat != current.searchedChat ||
@@ -132,7 +144,7 @@ class _MyChatsViewState extends State<MyChatsView> {
                               isEqualTo: AuthService().getUser()!.uid),
                           Filter('user2UserId',
                               isEqualTo: AuthService().getUser()!.uid)))
-                      .orderBy('compatibility'),
+                      .orderBy('compatibility', descending: true),
                   itemBuilder: (context, snapshot, index) {
                     context
                         .read<ChatsBloc>()

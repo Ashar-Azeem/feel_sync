@@ -59,6 +59,19 @@ class Crud {
     try {
       DocumentReference result = userCollection.doc(userId);
       await result.update({"profileLocation": profileLocation});
+      QuerySnapshot docs = await chatCollection
+          .where(Filter.or(Filter('user1UserId', isEqualTo: userId),
+              Filter('user2UserId', isEqualTo: userId)))
+          .get();
+      for (QueryDocumentSnapshot documentSnapshot in docs.docs) {
+        DocumentReference documentRef = chatCollection.doc(documentSnapshot.id);
+        var chat = Chat.fromDocumentSnapshot(documentSnapshot);
+        if (chat.user1UserId == userId) {
+          await documentRef.update({'user1ProfileLoc': profileLocation});
+        } else {
+          await documentRef.update({'user2ProfileLoc': profileLocation});
+        }
+      }
 
       return true;
     } catch (e) {
@@ -140,7 +153,7 @@ class Crud {
         'user2UserName': demoChat.user2UserName,
         'user2FCMToken': demoChat.user2FCMToken,
         'user2ProfileLoc': demoChat.user2ProfileLoc,
-        'user1Seen': false,
+        'user1Seen': true,
         'user2Seen': false,
         'compatibility': 0,
         'user1Emotions': {
@@ -158,6 +171,7 @@ class Crud {
           'Fear': 0
         },
         'lastMessage': '',
+        'lastMessageDateTime': DateTime.now()
       };
 
       // Add the data to Firestore and get the document reference
@@ -165,34 +179,34 @@ class Crud {
 
       // Return a Chat object without fetching it
       Chat chat = Chat(
-        chatId: docRef.id, // Use the document ID directly
-        user1UserId: demoChat.user1UserId,
-        user1UserName: demoChat.user1UserName,
-        user1FCMToken: demoChat.user1FCMToken,
-        user1ProfileLoc: demoChat.user1ProfileLoc,
-        user2UserId: demoChat.user2UserId,
-        user2UserName: demoChat.user2UserName,
-        user2FCMToken: demoChat.user2FCMToken,
-        user2ProfileLoc: demoChat.user2ProfileLoc,
-        user1Seen: false,
-        user2Seen: false,
-        compatibility: 0,
-        user1Emotions: const {
-          'Sadness': 0,
-          'Joy': 0,
-          'Love': 0,
-          'Anger': 0,
-          'Fear': 0
-        },
-        user2Emotions: const {
-          'Sadness': 0,
-          'Joy': 0,
-          'Love': 0,
-          'Anger': 0,
-          'Fear': 0
-        },
-        lastMessage: "",
-      );
+          chatId: docRef.id, // Use the document ID directly
+          user1UserId: demoChat.user1UserId,
+          user1UserName: demoChat.user1UserName,
+          user1FCMToken: demoChat.user1FCMToken,
+          user1ProfileLoc: demoChat.user1ProfileLoc,
+          user2UserId: demoChat.user2UserId,
+          user2UserName: demoChat.user2UserName,
+          user2FCMToken: demoChat.user2FCMToken,
+          user2ProfileLoc: demoChat.user2ProfileLoc,
+          user1Seen: true,
+          user2Seen: false,
+          compatibility: 0,
+          user1Emotions: const {
+            'Sadness': 0,
+            'Joy': 0,
+            'Love': 0,
+            'Anger': 0,
+            'Fear': 0
+          },
+          user2Emotions: const {
+            'Sadness': 0,
+            'Joy': 0,
+            'Love': 0,
+            'Anger': 0,
+            'Fear': 0
+          },
+          lastMessage: "",
+          lastMessageDateTime: DateTime.now());
       return chat;
     } catch (e) {
       // Handle exceptions
@@ -286,18 +300,32 @@ class Crud {
               FieldValue.increment(1), // Update the sender userEmotions map
 
           'user${receiverNumber}Seen': false,
-          'lastMessage': lastMessage
+          'lastMessage': lastMessage,
+          'lastMessageDateTime': DateTime.now()
         });
       } else {
         await chatDoc.update({
           'user${1}Emotions.$emotionKey':
               FieldValue.increment(1), // Update the sender userEmotions map
           'user${receiverNumber}Seen': false,
-          'lastMessage': lastMessage
+          'lastMessage': lastMessage,
+          'lastMessageDateTime': DateTime.now()
         });
       }
     } catch (e) {
 //
+    }
+  }
+
+  Future<void> messageSeenUpdate(
+      {required String chatId, required receiverNumber}) async {
+    final DocumentReference chatDoc =
+        FirebaseFirestore.instance.collection('chats').doc(chatId);
+
+    if (receiverNumber == 1) {
+      await chatDoc.update({'user2Seen': true});
+    } else {
+      await chatDoc.update({'user1Seen': true});
     }
   }
 }

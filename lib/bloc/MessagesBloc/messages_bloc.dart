@@ -1,21 +1,28 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:feel_sync/EmotionDetector/EmotionDetectionManager.dart';
 import 'package:feel_sync/Models/Chat.dart';
 import 'package:feel_sync/Models/user.dart';
 import 'package:feel_sync/Services/CRUD.dart';
+import 'package:flutter/material.dart';
 part 'messages_event.dart';
 part 'messages_state.dart';
 
 class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
-  Timer? _timer;
-  late StreamSubscription _stateSubscription;
+  late StreamSubscription _documentSubscription;
   MessagesBloc() : super(const MessagesState()) {
-    on<SeenChecker>(seenChecker);
+    on<SeenChecker>(onSeenChcker);
+    on<SeenChanged>(
+      (event, emit) {
+        emit(state.copyWith(chat: event.chat, seen: event.seen));
+      },
+    );
     on<InitChat>(initChat);
     on<SendMessage>(sendMessage);
     on<DisposeSeen>(disposeSeen);
+    on<MessageSeenAction>(messageSeenAction);
   }
 
   void initChat(InitChat event, Emitter<MessagesState> emit) {
@@ -26,26 +33,46 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     }
   }
 
-  void seenChecker(SeenChecker event, Emitter<MessagesState> emit) {
-    _stateSubscription = stream.listen((newstate) {
-      if (newstate.chat!.chatId != null) {
-        _timer = Timer.periodic(const Duration(seconds: 2), (timer) async {
-          await Crud().getChatById(state.chat!).then((chat) {
-            if (state.receiverNumber == 1) {
-              emit(state.copyWith(chat: chat, seen: state.chat!.user1Seen));
-            } else {
-              emit(state.copyWith(chat: chat, seen: state.chat!.user2Seen));
-            }
-          });
-        });
+  void onSeenChcker(SeenChecker event, Emitter<MessagesState> emit) {
+    _listenToDocument();
+  }
+
+  void _listenToDocument() {
+    _documentSubscription = FirebaseFirestore.instance
+        .collection('chats')
+        .doc(state.chat!.chatId!)
+        .snapshots()
+        .listen((snapshot) {
+      if (snapshot.exists) {
+        Chat chat = Chat.fromMap(snapshot.data()!, snapshot.id);
+        if (state.receiverNumber == 1 && chat.user1Seen != state.seen) {
+          add(SeenChanged(chat: chat, seen: chat.user1Seen));
+        } else if (state.receiverNumber == 2 && chat.user2Seen != state.seen) {
+          add(SeenChanged(chat: chat, seen: chat.user2Seen));
+        }
       }
+    }, onError: (error) {
+      addError(error.toString());
     });
+  }
+
+  void seenChecker(SeenChecker event, Emitter<MessagesState> emit) async {
+    if (state.chat!.chatId != null) {
+      await Crud().getChatById(state.chat!).then((chat) {
+        if (state.receiverNumber == 1) {
+          emit(state.copyWith(chat: chat, seen: state.chat!.user1Seen));
+        } else {
+          emit(state.copyWith(chat: chat, seen: state.chat!.user2Seen));
+        }
+      });
+    }
   }
 
   void sendMessage(SendMessage event, Emitter<MessagesState> emit) async {
     emit(state.copyWith(sendMessageLoading: true));
-
-    String emotionKey = await event.edm.detectEmotion(event.messageText);
+    final edm = EmotionDetectionManager();
+    await edm.initialize();
+    String emotionKey = await edm.detectEmotion(event.messageText);
     String senderId;
     String receiverId;
 
@@ -61,13 +88,22 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         .insertMessage(senderId, receiverId, state.chat!, event.messageText,
             DateTime.now(), emotionKey, state.receiverNumber)
         .then((chat) {
-      emit(state.copyWith(chat: chat, sendMessageLoading: false));
+      event.controller.text = '';
+      emit(state.copyWith(
+        chat: chat.copyWith(),
+        sendMessageLoading: false,
+      ));
     });
   }
 
+  void messageSeenAction(
+      MessageSeenAction event, Emitter<MessagesState> emit) async {
+    await Crud().messageSeenUpdate(
+        chatId: state.chat!.chatId!, receiverNumber: state.receiverNumber);
+  }
+
   void disposeSeen(DisposeSeen event, Emitter<MessagesState> emit) {
-    _timer!.cancel();
-    _stateSubscription.cancel();
+    _documentSubscription.cancel();
     emit(state.copyWith(seen: false));
   }
 }

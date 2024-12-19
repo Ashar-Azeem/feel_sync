@@ -5,22 +5,32 @@ class MessagesState extends Equatable {
   final bool seen;
   final int receiverNumber;
   final bool sendMessageLoading;
+  const MessagesState({
+    this.sendMessageLoading = false,
+    this.receiverNumber = 2,
+    this.chat,
+    this.seen = false,
+  });
 
-  const MessagesState(
-      {this.sendMessageLoading = false,
-      this.receiverNumber = 2,
-      this.chat,
-      this.seen = false});
-
-  MessagesState copyWith(
-      {Chat? chat, bool? seen, int? receiverNumber, bool? sendMessageLoading}) {
+  MessagesState copyWith({
+    Chat? chat,
+    bool? seen,
+    int? receiverNumber,
+    bool? sendMessageLoading,
+  }) {
     return MessagesState(
-        chat: chat ?? this.chat,
-        seen: seen ?? this.seen,
-        receiverNumber: receiverNumber ?? this.receiverNumber,
-        sendMessageLoading: sendMessageLoading ?? this.sendMessageLoading);
+      chat: chat ?? this.chat,
+      seen: seen ?? this.seen,
+      receiverNumber: receiverNumber ?? this.receiverNumber,
+      sendMessageLoading: sendMessageLoading ?? this.sendMessageLoading,
+    );
   }
 
   @override
-  List<Object?> get props => [chat, seen, receiverNumber, sendMessageLoading];
+  List<Object?> get props => [
+        chat,
+        seen,
+        receiverNumber,
+        sendMessageLoading,
+      ];
 }

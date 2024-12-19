@@ -22,4 +22,8 @@ class EmotionPredictor {
 
     return labels[predictedIndex];
   }
+
+  void dispose() {
+    _interpreter.close();
+  }
 }

@@ -35,12 +35,10 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
               chat.user2UserId == event.ownerUser.userId));
     }).toList();
     if (filteredChats.isNotEmpty) {
-      print("in filtered");
       emit(state.copyWith(chat1: filteredChats[0]));
     } else {
       await Crud().getChat(event.ownerUser, event.otherUser).then((chat) async {
         if (chat != null) {
-          print("Retreived from the database");
           emit(state.copyWith(
               chat1: chat, findingChatStatus: FindingChatStatus.done));
         } else {
@@ -54,7 +52,7 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
               user2UserName: event.otherUser.userName,
               user2FCMToken: event.otherUser.token,
               user2ProfileLoc: event.otherUser.profileLocation,
-              user1Seen: false,
+              user1Seen: true,
               user2Seen: false,
               compatibility: 0,
               user1Emotions: const {
@@ -71,8 +69,8 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
                 'Anger': 0,
                 'Fear': 0
               },
-              lastMessage: '');
-          print("making a demo chat");
+              lastMessage: '',
+              lastMessageDateTime: DateTime.now());
           emit(state.copyWith(
               findingChatStatus: FindingChatStatus.done, chat1: demoChat));
         }
@@ -81,7 +79,6 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
   }
 
   void disposeChat(DisposeChatSelected event, Emitter<ChatsState> emit) {
-    print("Disposing chats");
     emit(state.copyWith(chat1: null));
   }
 

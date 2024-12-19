@@ -9,6 +9,13 @@ abstract class MessagesEvent extends Equatable {
 
 class SeenChecker extends MessagesEvent {}
 
+class SeenChanged extends MessagesEvent {
+  final Chat chat;
+  final bool seen;
+
+  const SeenChanged({required this.chat, required this.seen});
+}
+
 class InitChat extends MessagesEvent {
   final Chat chat;
   final User ownerUser;
@@ -20,7 +27,9 @@ class DisposeSeen extends MessagesEvent {}
 
 class SendMessage extends MessagesEvent {
   final String messageText;
-  final EmotionDetectionManager edm;
+  final TextEditingController controller;
 
-  const SendMessage({required this.edm, required this.messageText});
+  const SendMessage({required this.controller, required this.messageText});
 }
+
+class MessageSeenAction extends MessagesEvent {}

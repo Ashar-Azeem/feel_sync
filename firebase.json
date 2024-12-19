@@ -1,1 +1,38 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"pulsechat-e4521","appId":"1:865744072556:android:1e61320b8e19f1f051cd49","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"pulsechat-e4521","configurations":{"android":"1:865744072556:android:1e61320b8e19f1f051cd49","ios":"1:865744072556:ios:3bb908045932b99e51cd49"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "pulsechat-e4521",
+          "appId": "1:865744072556:android:1e61320b8e19f1f051cd49",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "pulsechat-e4521",
+          "configurations": {
+            "android": "1:865744072556:android:1e61320b8e19f1f051cd49",
+            "ios": "1:865744072556:ios:3bb908045932b99e51cd49"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
+}

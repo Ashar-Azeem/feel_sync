@@ -36,9 +36,11 @@ class _UsersListViewState extends State<UsersListView> {
       listener: (context, state) {
         if (state.chat != null) {
           final userBlocState = context.read<UserBloc>().state;
+
           context
               .read<MessagesBloc>()
               .add(InitChat(ownerUser: userBlocState.user!, chat: state.chat!));
+
           context
               .read<chatsBloc.ChatsBloc>()
               .add(chatsBloc.DisposeChatSelected());
@@ -144,6 +146,7 @@ class _UsersListViewState extends State<UsersListView> {
               builder: (context, state) {
                 if (state.searching == Searching.no) {
                   return FirestorePagination(
+                    isLive: false,
                     limit: 15,
                     bottomLoader: const Center(
                       child: CircularProgressIndicator(
