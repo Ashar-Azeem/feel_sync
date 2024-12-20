@@ -328,4 +328,20 @@ class Crud {
       await chatDoc.update({'user1Seen': true});
     }
   }
+
+  Future<double> measureCompatibility(String userId) async {
+    double combatibilityMeasure = 0;
+    QuerySnapshot docs = await chatCollection
+        .where(Filter.or(Filter('user1UserId', isEqualTo: userId),
+            Filter('user2UserId', isEqualTo: userId)))
+        .get();
+    if (docs.docs.isEmpty) {
+      combatibilityMeasure;
+    }
+    for (QueryDocumentSnapshot documentSnapshot in docs.docs) {
+      var chat = Chat.fromDocumentSnapshot(documentSnapshot);
+      combatibilityMeasure += chat.compatibility;
+    }
+    return (combatibilityMeasure / docs.docs.length).roundToDouble();
+  }
 }

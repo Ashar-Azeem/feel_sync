@@ -1,3 +1,4 @@
+import 'package:feel_sync/Utilities/ReusableUI/AnalysisView.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sizer/sizer.dart';
@@ -12,7 +13,6 @@ class Analysisview extends StatelessWidget {
           child: CustomScrollView(
         slivers: [
           SliverAppBar(
-            pinned: true,
             forceMaterialTransparency: true,
             backgroundColor: Colors.transparent,
             title: Padding(
@@ -38,6 +38,21 @@ class Analysisview extends StatelessWidget {
                           fontWeight: FontWeight.w500)),
                 ),
               ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: CompatibilityBarCharts(
+              ageGroupCompatibility: {
+                "18-24": 75.0,
+                "25-34": 85.0,
+                "35-44": 65.0,
+                "45-54": 50.0,
+                "55+": 40.0,
+              },
+              genderCompatibility: {
+                "Male": 80.0,
+                "Female": 90.0,
+              },
             ),
           )
         ],
