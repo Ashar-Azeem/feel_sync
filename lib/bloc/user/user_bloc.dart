@@ -12,10 +12,12 @@ import 'package:feel_sync/Utilities/ReusableUI/ShowEditUserProfile.dart';
 import 'package:feel_sync/bloc/user/user_state.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 part 'user_event.dart';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  UserBloc() : super(const UserState()) {
+  UserBloc(PersistentTabController controller)
+      : super(UserState(controller: controller)) {
     on<FetchUser>(fetchUser);
     on<ChangeProfilePicture>(changeProfilePicture);
     on<ChangeName>(changeName);

@@ -48,14 +48,10 @@ class _EmotionAnalysisState extends State<EmotionAnalysis> {
   }
 
   List<PieChartSectionData> getList(Map<String, int> emotions) {
-    final total = emotions.values.reduce((sum, value) => sum + value);
     return emotions.entries.map((entry) {
-      final percentage = (entry.value / total) * 100;
       return PieChartSectionData(
-        titleStyle: const TextStyle(color: Colors.black),
+        showTitle: false,
         value: entry.value.toDouble(),
-        title:
-            '${percentage.toStringAsFixed(1)}%', // Show percentage on the chart
         color: _getColorForEmotion(entry.key),
         radius: 70,
       );
@@ -103,7 +99,7 @@ class _EmotionAnalysisState extends State<EmotionAnalysis> {
                                     35, // Space in the middle of the chart
                                 sectionsSpace: 2, // Space between pie sections
                               ),
-                              duration: const Duration(milliseconds: 150),
+                              duration: const Duration(milliseconds: 1000),
                               curve: Curves.linear,
                             ),
                           ),

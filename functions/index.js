@@ -3,118 +3,102 @@ const {initializeApp} = require("firebase-admin/app");
 
 initializeApp();
 
-exports.calculateCompatibility =
-  onDocumentUpdated("chats/{chatId}", (event) => {
+exports.calculateCompatibility = onDocumentUpdated("chats/{chatId}",
+  (event) => {
+    const beforeData = event.data.before.data();
+    const afterData = event.data.after.data();
+
+    const fieldsOfInterest = ["user1Emotions", "user2Emotions"];
+    const hasChanged = fieldsOfInterest.some((field) =>
+      JSON.stringify(beforeData[field]) !==
+      JSON.stringify(afterData[field]),
+    );
+
+    if (!hasChanged) {
+      return null;
+    }
     const newData = event.data.after.data();
     const user1Emotions = newData.user1Emotions;
     const user2Emotions = newData.user2Emotions;
+    const oldCompatibility = newData.compatibility;
 
-    const user1Array = Object.values(user1Emotions);
-    const user2Array = Object.values(user2Emotions);
-
-    const sumArray = (arr) => arr.reduce((sum, val) => sum + val, 0);
-
-    // Check if the sum of any emotion map is zero
-    const sumUser1 = sumArray(user1Array);
-    const sumUser2 = sumArray(user2Array);
-    if (sumUser1 === 0 || sumUser2 === 0) {
-      return event.data.after.ref.update({
-        compatibility: "0.00",
-      });
-    }
-
-    // Balance interaction check
-    const interactionBalance =
-      Math.min(sumUser1, sumUser2) / Math.max(sumUser1, sumUser2);
-
-    // Penalize one-sided dominance
-    const oneSidedPenalty = 1 - interactionBalance;
+    const sumArray = (arr) =>
+      arr.reduce((sum, val) => sum + val, 0);
 
     const normalize = (arr) => {
       const total = sumArray(arr);
-      return arr.map((val) => val / total);
+      return total === 0 ?
+        arr.map(() => 0) : arr.map((val) => val / total);
     };
 
     const cosineSimilarity = (arr1, arr2) => {
-      const dotProduct =
-        arr1.reduce((sum, val, i) =>
-          sum + val * arr2[i], 0);
+      const dotProduct = arr1.reduce((sum, val, i) => sum + val * arr2[i], 0);
       const magnitude1 =
-        Math.sqrt(arr1.reduce((sum, val) =>
-          sum + val * val, 0));
+        Math.sqrt(arr1.reduce((sum, val) => sum + val * val, 0));
       const magnitude2 =
-        Math.sqrt(arr2.reduce((sum, val) =>
-          sum + val * val, 0));
-      return dotProduct / (magnitude1 * magnitude2);
+        Math.sqrt(arr2.reduce((sum, val) => sum + val * val, 0));
+      return magnitude1 === 0 || magnitude2 === 0 ? 0 :
+        dotProduct / (magnitude1 * magnitude2);
     };
 
-    const manhattanDistance = (arr1, arr2) => {
-      const distance = arr1.reduce((sum, val, i) =>
-        sum + Math.abs(val - arr2[i]), 0);
-      return 1 - distance / arr1.length;
-    };
-
-    const complementarityScore = (user1, user2) => {
+    const complementarityScore = (user1, user2, sumUser1, sumUser2) => {
       const [anger1, fear1, joy1, love1, sadness1] = user1;
       const [anger2, fear2, joy2, love2, sadness2] = user2;
 
       let score = 0;
-
-      // Complementarity logic
-      if (sadness1 > 0 && (joy2 > 0 || love2 > 0)) {
-        score +=
-          sadness1 * (joy2 + love2);
+      if (sadness1 > 0) {
+        score += (joy2 + love2) / sadness1;
       }
-      if (sadness2 > 0 && (joy1 > 0 || love1 > 0)) {
-        score +=
-          sadness2 * (joy1 + love1);
+      if (sadness2 > 0) {
+        score += (joy1 + love1) / sadness2;
       }
-      if (fear1 > 0 && (joy2 > 0 || love2 > 0)) {
-        score +=
-          fear1 * (joy2 + love2);
+      if (anger1 > 0) {
+        score += love2 / anger1;
       }
-      if (fear2 > 0 && (joy1 > 0 || love1 > 0)) {
-        score +=
-          fear2 * (joy1 + love1);
+      if (anger2 > 0) {
+        score += love1 / anger2;
       }
-
-      // Penalize shared negative emotions
-      score -= (anger1 * anger2 + sadness1 * sadness2);
-
-      // Reward high love or joy correlations
-      score += 0.5 * (love1 * love2 + joy1 * joy2);
-
-      return score / (sumUser1 + sumUser2);
+      if (fear1 > 0) {
+        score += love2 / fear1;
+      }
+      if (fear2 > 0) {
+        score += love1 / fear2;
+      }
+      score += 0.5 * (joy1 * joy2 + love1 * love2);
+      return sumUser1 === 0 || sumUser2 === 0 ? 0 :
+        score / (sumUser1 + sumUser2);
     };
 
-    const emotionDiversityScore = (arr) => {
-      // Higher diversity in emotions is rewarded
-      const uniqueEmotions = arr.filter((val) => val > 0).length;
-      return uniqueEmotions / arr.length;
-    };
+    const user1Array = Object.values(user1Emotions);
+    const user2Array = Object.values(user2Emotions);
+
+    const sumUser1 = sumArray(user1Array);
+    const sumUser2 = sumArray(user2Array);
+
+    if (sumUser1 === 0 || sumUser2 === 0) {
+      return event.data.after.ref.update({
+        compatibility: 0.0,
+      });
+    }
 
     const normalizedUser1 = normalize(user1Array);
     const normalizedUser2 = normalize(user2Array);
 
     const cosineScore =
       cosineSimilarity(normalizedUser1, normalizedUser2);
-    const manhattanScore =
-      manhattanDistance(normalizedUser1, normalizedUser2);
-    const complementarity = complementarityScore(user1Array, user2Array);
+    const complementarity =
+      complementarityScore(user1Array, user2Array, sumUser1, sumUser2);
 
-    // Emotion diversity contribution
-    const diversityScore = (emotionDiversityScore(user1Array) +
-      emotionDiversityScore(user2Array)) / 2;
+    const interactionBalance =
+      Math.min(sumUser1, sumUser2) / Math.max(sumUser1, sumUser2);
 
     const compatibilityScore =
-      ((cosineScore * 0.3) + (manhattanScore * 0.25) +
-        (complementarity * 0.3) + (diversityScore * 0.15)) *
-      interactionBalance * (1 - oneSidedPenalty);
+      ((complementarity * 0.5) + (cosineScore * 0.5)) * interactionBalance;
 
-    const finalScore =
-      Math.min(100, Math.max(0, compatibilityScore * 100));
+    const finalScore = Math.min(100, Math.max(0, compatibilityScore * 100));
+    const updatedScore = oldCompatibility * 0.6 + finalScore * 0.4;
 
     return event.data.after.ref.update({
-      compatibility: finalScore.toFixed(2),
+      compatibility: Number(updatedScore.toFixed(2)),
     });
   });

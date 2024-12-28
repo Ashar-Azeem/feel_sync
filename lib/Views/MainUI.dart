@@ -22,18 +22,18 @@ class MainUI extends StatefulWidget {
 }
 
 class _MainUIState extends State<MainUI> {
-  late PersistentTabController _controller;
+  late PersistentTabController controller;
 
   @override
   void dispose() {
-    _controller.dispose();
+    controller.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    _controller = PersistentTabController(initialIndex: 0);
+    controller = PersistentTabController(initialIndex: 0);
   }
 
   List<Widget> _buildScreens() {
@@ -49,7 +49,7 @@ class _MainUIState extends State<MainUI> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => UserBloc()),
+        BlocProvider(create: (_) => UserBloc(controller)),
         BlocProvider(create: (_) => ExploreUsersBloc()),
         BlocProvider(create: (_) => ChatsBloc()),
         BlocProvider(create: (_) => MessagesBloc())
@@ -67,7 +67,7 @@ class _MainUIState extends State<MainUI> {
               hideNavigationBarWhenKeyboardAppears: true,
               context,
               screens: _buildScreens(),
-              controller: _controller,
+              controller: controller,
               navBarStyle: NavBarStyle.style3,
               items: [
                 PersistentBottomNavBarItem(

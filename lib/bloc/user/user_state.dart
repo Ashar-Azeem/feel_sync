@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:feel_sync/Models/user.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class UserState extends Equatable {
   final User? user;
@@ -9,8 +10,10 @@ class UserState extends Equatable {
   final UserNameStates userNameState;
   final AboutSectionStates aboutSectionState;
   final LogOutState logOutState;
+  final PersistentTabController controller;
 
   const UserState({
+    required this.controller,
     this.logOutState = LogOutState.no,
     this.userNameState = UserNameStates.done,
     this.aboutSectionState = AboutSectionStates.done,
@@ -30,6 +33,7 @@ class UserState extends Equatable {
     LogOutState? logOutState,
   }) {
     return UserState(
+      controller: controller,
       user: user ?? this.user,
       state: state ?? this.state,
       profileState: profileState ?? this.profileState,

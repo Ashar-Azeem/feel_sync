@@ -77,6 +77,7 @@ class Chat extends Equatable {
 
   factory Chat.fromDocumentSnapshot(DocumentSnapshot result) {
     Map<String, dynamic> data = result.data() as Map<String, dynamic>;
+    num value = data['compatibility'];
 
     return Chat(
       chatId: result.id,
@@ -90,7 +91,7 @@ class Chat extends Equatable {
       user2ProfileLoc: data['user2ProfileLoc'] as String,
       user1Seen: data['user1Seen'] as bool,
       user2Seen: data['user2Seen'] as bool,
-      compatibility: double.parse(data['compatibility'] as String),
+      compatibility: value.toDouble(),
       user1Emotions: Map<String, int>.from(data['user1Emotions']),
       user2Emotions: Map<String, int>.from(data['user2Emotions']),
       lastMessage: data['lastMessage'] as String,
@@ -98,6 +99,8 @@ class Chat extends Equatable {
     );
   }
   factory Chat.fromMap(Map<String, dynamic> data, String id) {
+    num value = data['compatibility'];
+
     return Chat(
       chatId: id,
       user1UserId: data['user1UserId'] as String,
@@ -110,7 +113,7 @@ class Chat extends Equatable {
       user2ProfileLoc: data['user2ProfileLoc'] as String,
       user1Seen: data['user1Seen'] as bool,
       user2Seen: data['user2Seen'] as bool,
-      compatibility: double.parse(data['compatibility'] as String),
+      compatibility: value.toDouble(),
       user1Emotions: Map<String, int>.from(data['user1Emotions']),
       user2Emotions: Map<String, int>.from(data['user2Emotions']),
       lastMessage: data['lastMessage'] as String,

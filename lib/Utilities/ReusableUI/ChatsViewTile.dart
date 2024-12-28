@@ -1,40 +1,20 @@
 import 'package:feel_sync/Models/Chat.dart';
-import 'package:feel_sync/Views/MessagingView.dart';
-import 'package:feel_sync/bloc/MessagesBloc/messages_bloc.dart';
 import 'package:feel_sync/bloc/user/user_bloc.dart';
 import 'package:feel_sync/bloc/user/user_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:sizer/sizer.dart';
 
 class ChatsViewTile extends StatelessWidget {
   final Chat chat;
-  const ChatsViewTile({super.key, required this.chat});
+  final VoidCallback onClick;
+  const ChatsViewTile({super.key, required this.chat, required this.onClick});
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        final messageBloc = context.read<MessagesBloc>();
-        final userBloc = context.read<UserBloc>();
-        context
-            .read<MessagesBloc>()
-            .add(InitChat(ownerUser: userBloc.state.user!, chat: chat));
-
-        PersistentNavBarNavigator.pushNewScreen(
-          context,
-          screen: BlocProvider.value(
-              value: userBloc,
-              child: BlocProvider.value(
-                value: messageBloc,
-                child: const MessagingView(),
-              )),
-          withNavBar: false,
-          pageTransitionAnimation: PageTransitionAnimation.cupertino,
-        );
-      },
+      onTap: onClick,
       child: BlocBuilder<UserBloc, UserState>(
         buildWhen: (previous, current) {
           if (current.user != previous.user) {

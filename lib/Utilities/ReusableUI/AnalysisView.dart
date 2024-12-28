@@ -3,9 +3,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:sizer/sizer.dart';
 
 class CompatibilityBarCharts extends StatelessWidget {
-  final Map<String, double>
+  final Map<String, int>
       ageGroupCompatibility; // Age groups and compatibility percentages
-  final Map<String, double>
+  final Map<String, int>
       genderCompatibility; // Gender and compatibility percentages
 
   const CompatibilityBarCharts({
@@ -67,9 +67,9 @@ class CompatibilityBarCharts extends StatelessWidget {
     );
   }
 
-  Widget _buildBarChart(Map<String, double> data, String xAxisLabel) {
+  Widget _buildBarChart(Map<String, int> data, String xAxisLabel) {
     return SizedBox(
-      height: 35.h, // Constrain the height of the bar chart
+      height: 37.h, // Constrain the height of the bar chart
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
@@ -78,22 +78,27 @@ class CompatibilityBarCharts extends StatelessWidget {
               x: data.keys.toList().indexOf(entry.key),
               barRods: [
                 BarChartRodData(
-                  toY: entry.value,
+                  toY:
+                      entry.value.toDouble(), // Use the original value directly
                   color: Colors.blue,
                   width: 16,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(1),
                 ),
               ],
             );
           }).toList(),
+          maxY: 100, // Fix the maximum Y value to 100
           titlesData: FlTitlesData(
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 32,
-                interval: 10,
+                reservedSize: 40,
+                interval: 10, // Fixed interval of 10
                 getTitlesWidget: (value, meta) {
-                  return Text("${value.toInt()}%");
+                  return Padding(
+                    padding: EdgeInsets.only(top: 4.w),
+                    child: Text("${value.toInt()}%"),
+                  );
                 },
               ),
             ),
@@ -123,7 +128,8 @@ class CompatibilityBarCharts extends StatelessWidget {
             topTitles:
                 const AxisTitles(sideTitles: SideTitles(showTitles: false)),
           ),
-          gridData: const FlGridData(show: true, horizontalInterval: 10),
+          gridData: const FlGridData(
+              show: true, horizontalInterval: 10), // Fixed grid interval
           borderData: FlBorderData(
             show: true,
             border: Border(

@@ -3,11 +3,16 @@ import 'package:feel_sync/Models/Chat.dart';
 import 'package:feel_sync/Services/AuthService.dart';
 import 'package:feel_sync/Utilities/ReusableUI/ChatsViewTile.dart';
 import 'package:feel_sync/Utilities/ReusableUI/ShimmerLoaderExploreView.dart';
+import 'package:feel_sync/Views/MessagingView.dart';
 import 'package:feel_sync/bloc/ChatsBloc/chats_bloc.dart';
+import 'package:feel_sync/bloc/MessagesBloc/messages_bloc.dart';
+import 'package:feel_sync/bloc/user/user_bloc.dart';
 import 'package:firebase_pagination/firebase_pagination.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:sizer/sizer.dart';
 
 class MyChatsView extends StatefulWidget {
@@ -23,6 +28,12 @@ class _MyChatsViewState extends State<MyChatsView> {
   void initState() {
     super.initState();
     search = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    search.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,7 +74,7 @@ class _MyChatsViewState extends State<MyChatsView> {
           SliverToBoxAdapter(
             child: Padding(
               padding:
-                  EdgeInsets.only(left: 4.w, right: 4.w, top: 1.h, bottom: 2.h),
+                  EdgeInsets.only(left: 4.w, right: 4.w, top: 1.h, bottom: 3.h),
               child: Container(
                 width: 75.w,
                 height: 5.6.h,
@@ -76,11 +87,11 @@ class _MyChatsViewState extends State<MyChatsView> {
                   },
                   onChanged: (value) {
                     if (search.text.isEmpty) {
-                      // context.read<ExploreUsersBloc>().add(SearchEnded());
+                      context.read<ChatsBloc>().add(SearchEnded());
                     } else {
-                      // context
-                      // .read<ExploreUsersBloc>()
-                      // .add(Search(query: search.text));
+                      context.read<ChatsBloc>().add(SearchChat(
+                          ownerUserId: AuthService().getUser()!.uid,
+                          otherUserName: search.text));
                     }
                   },
                   cursorColor: Colors.white,
@@ -94,18 +105,6 @@ class _MyChatsViewState extends State<MyChatsView> {
                       prefixIcon: const Icon(Icons.search)),
                   textAlign: TextAlign.left,
                 ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.only(left: 2.w, bottom: 4.w),
-              child: Text(
-                "Messages",
-                style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 4.3.w,
-                    color: Colors.white),
               ),
             ),
           ),
@@ -131,8 +130,43 @@ class _MyChatsViewState extends State<MyChatsView> {
                     ),
                   ),
                   isLive: true,
-                  onEmpty: const Center(
-                    child: Text('No Chats Available'),
+                  onEmpty: Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 20.h),
+                      child: SizedBox(
+                        width: 80.w,
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            text: "Your chat list is empty! Head over to the ",
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 16, height: 1.3),
+                            children: [
+                              TextSpan(
+                                text: "Explore",
+                                style: const TextStyle(
+                                    color: Colors.blue,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.none),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    final userBloc =
+                                        context.read<UserBloc>().state;
+                                    userBloc.controller.jumpToTab(1);
+                                  },
+                              ),
+                              const TextSpan(
+                                text:
+                                    " page to discover and connect with new people.",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
                   shrinkWrap: true,
                   viewType: ViewType.list,
@@ -151,7 +185,28 @@ class _MyChatsViewState extends State<MyChatsView> {
                         .add(CacheChats(snapshsot: snapshot));
                     final Chat chat =
                         Chat.fromDocumentSnapshot(snapshot.elementAt(index));
-                    return ChatsViewTile(chat: chat);
+                    return ChatsViewTile(
+                      chat: chat,
+                      onClick: () {
+                        final messageBloc = context.read<MessagesBloc>();
+                        final userBloc = context.read<UserBloc>();
+                        context.read<MessagesBloc>().add(InitChat(
+                            ownerUser: userBloc.state.user!, chat: chat));
+
+                        PersistentNavBarNavigator.pushNewScreen(
+                          context,
+                          screen: BlocProvider.value(
+                              value: userBloc,
+                              child: BlocProvider.value(
+                                value: messageBloc,
+                                child: const MessagingView(),
+                              )),
+                          withNavBar: false,
+                          pageTransitionAnimation:
+                              PageTransitionAnimation.cupertino,
+                        );
+                      },
+                    );
                   },
                 );
               } else {
@@ -166,6 +221,27 @@ class _MyChatsViewState extends State<MyChatsView> {
                           itemBuilder: (context, index) {
                             return ChatsViewTile(
                               chat: state.searchedChat[index],
+                              onClick: () {
+                                final messageBloc =
+                                    context.read<MessagesBloc>();
+                                final userBloc = context.read<UserBloc>();
+                                context.read<MessagesBloc>().add(InitChat(
+                                    ownerUser: userBloc.state.user!,
+                                    chat: state.searchedChat[index]));
+
+                                PersistentNavBarNavigator.pushNewScreen(
+                                  context,
+                                  screen: BlocProvider.value(
+                                      value: userBloc,
+                                      child: BlocProvider.value(
+                                        value: messageBloc,
+                                        child: const MessagingView(),
+                                      )),
+                                  withNavBar: false,
+                                  pageTransitionAnimation:
+                                      PageTransitionAnimation.cupertino,
+                                );
+                              },
                             );
                           },
                         );

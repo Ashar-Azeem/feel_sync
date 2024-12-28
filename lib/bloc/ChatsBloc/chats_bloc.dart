@@ -12,6 +12,8 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
     on<CacheChats>(cacheChats);
     on<FetchChat>(fetchChat);
     on<DisposeChatSelected>(disposeChat);
+    on<SearchChat>(searchChat);
+    on<SearchEnded>(searchEnded);
   }
 
   void cacheChats(CacheChats event, Emitter<ChatsState> emit) {
@@ -35,7 +37,8 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
               chat.user2UserId == event.ownerUser.userId));
     }).toList();
     if (filteredChats.isNotEmpty) {
-      emit(state.copyWith(chat1: filteredChats[0]));
+      emit(state.copyWith(
+          chat1: filteredChats[0], findingChatStatus: FindingChatStatus.done));
     } else {
       await Crud().getChat(event.ownerUser, event.otherUser).then((chat) async {
         if (chat != null) {
@@ -82,10 +85,52 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
     emit(state.copyWith(chat1: null));
   }
 
+  void searchChat(SearchChat event, Emitter<ChatsState> emit) async {
+    emit(state.copyWith(searching: Searching.yes));
+
+    List<Chat> filteredChats = state.chats.where((chat) {
+      // Condition for user1 as owner and user2 matches search
+      bool condition1 = chat.user1UserId == event.ownerUserId &&
+          chat.user2UserName.compareTo(event.otherUserName) >= 0 &&
+          chat.user2UserName.compareTo('${event.otherUserName}z') < 0;
+
+      // Condition for user2 as owner and user1 matches search
+      bool condition2 = chat.user2UserId == event.ownerUserId &&
+          chat.user1UserName.compareTo(event.otherUserName) >= 0 &&
+          chat.user1UserName.compareTo('${event.otherUserName}z') < 0;
+      return condition1 || condition2;
+    }).toList();
+    if (filteredChats.isNotEmpty && checkInSearchedChats(filteredChats)) {
+      emit(state.copyWith(searchedChat: List.from(filteredChats)));
+    } else {
+      emit(state.copyWith(searchingState: SearchingState.loading));
+      await Crud()
+          .searchChats(event.ownerUserId, event.otherUserName)
+          .then((chats) {
+        emit(state.copyWith(
+            searchedChat: List.from(chats),
+            searchingState: SearchingState.done));
+      });
+    }
+  }
+
+  void searchEnded(SearchEnded event, Emitter<ChatsState> emit) {
+    emit(state.copyWith(searching: Searching.no));
+  }
+
 //Utility Functions:
   bool utilityFunctions(List<Chat> newChatsList) {
     for (Chat chat in newChatsList) {
       if (!state.chats.contains(chat)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool checkInSearchedChats(List<Chat> newChatsList) {
+    for (Chat chat in newChatsList) {
+      if (!state.searchedChat.contains(chat)) {
         return true;
       }
     }

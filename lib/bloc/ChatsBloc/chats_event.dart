@@ -21,3 +21,12 @@ class FetchChat extends ChatsEvent {
 }
 
 class DisposeChatSelected extends ChatsEvent {}
+
+class SearchEnded extends ChatsEvent {}
+
+class SearchChat extends ChatsEvent {
+  final String ownerUserId;
+  final String otherUserName;
+
+  const SearchChat({required this.ownerUserId, required this.otherUserName});
+}

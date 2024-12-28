@@ -155,7 +155,7 @@ class Crud {
         'user2ProfileLoc': demoChat.user2ProfileLoc,
         'user1Seen': true,
         'user2Seen': false,
-        'compatibility': 0,
+        'compatibility': 0.0,
         'user1Emotions': {
           'Sadness': 0,
           'Joy': 0,
@@ -190,7 +190,7 @@ class Crud {
           user2ProfileLoc: demoChat.user2ProfileLoc,
           user1Seen: true,
           user2Seen: false,
-          compatibility: 0,
+          compatibility: 0.0,
           user1Emotions: const {
             'Sadness': 0,
             'Joy': 0,
@@ -336,7 +336,7 @@ class Crud {
             Filter('user2UserId', isEqualTo: userId)))
         .get();
     if (docs.docs.isEmpty) {
-      combatibilityMeasure;
+      return combatibilityMeasure;
     }
     for (QueryDocumentSnapshot documentSnapshot in docs.docs) {
       var chat = Chat.fromDocumentSnapshot(documentSnapshot);
@@ -344,4 +344,203 @@ class Crud {
     }
     return (combatibilityMeasure / docs.docs.length).roundToDouble();
   }
+
+//Fetch all the data of the main user
+//Fetch the other user involved in the chat
+//For ageGroup make groups : (16-22),(23-29),(30-36),(37-43),(44-50),(50+)
+// Take mean of their compatibilty and put then into their corresponding key in the ageMap
+//For genderGroup make groups : Male and Female
+// Take mean of their compatibilty and put then into their corresponding key in the ageMap
+  Future<AnalysisData> getAnalysisData(String userId) async {
+    List<Chat> allChats = [];
+    List<User> allUsers = [];
+    Map<String, int> ageGroupAnalysis = {
+      "16-22": 0,
+      "23-29": 0,
+      "30-36": 0,
+      "37-43": 0,
+      "44-50": 0,
+      "50+": 0,
+    };
+    Map<String, int> genderGroupAnalysis = {
+      "Male": 0,
+      "Female": 0,
+    };
+    List<int> ageDivisor = [0, 0, 0, 0, 0, 0];
+    List<int> genderDivisor = [0, 0];
+
+    QuerySnapshot docs = await chatCollection
+        .where(Filter.or(Filter('user1UserId', isEqualTo: userId),
+            Filter('user2UserId', isEqualTo: userId)))
+        .get();
+    if (docs.docs.isEmpty) {
+      return AnalysisData(
+          ageGroupAnalysis: ageGroupAnalysis,
+          genderGroupAnalysis: genderGroupAnalysis);
+    }
+
+    for (QueryDocumentSnapshot documentSnapshot in docs.docs) {
+      allChats.add(Chat.fromDocumentSnapshot(documentSnapshot));
+    }
+    //Fetching all user associated in chat
+    for (Chat chat in allChats) {
+      if (chat.user1UserId == userId) {
+        allUsers.add(User.fromDocumentSnapshot(
+            await userCollection.doc(chat.user2UserId).get()));
+      } else {
+        allUsers.add(User.fromDocumentSnapshot(
+            await userCollection.doc(chat.user1UserId).get()));
+      }
+    }
+
+    for (User user in allUsers) {
+      int compatibility = allChats
+          .firstWhere((chat) =>
+              (chat.user1UserId == user.userId) ||
+              (chat.user2UserId == user.userId))
+          .compatibility
+          .toInt();
+      if (user.age > 50) {
+        ageGroupAnalysis["50+"] =
+            (ageGroupAnalysis["50+"] ?? 0) + compatibility;
+
+        ageDivisor[5] += 1;
+
+        if (user.gender == "Male") {
+          genderGroupAnalysis["Male"] =
+              (genderGroupAnalysis["Male"] ?? 0) + compatibility;
+          genderDivisor[0] += 1;
+        } else {
+          genderGroupAnalysis["Female"] =
+              (genderGroupAnalysis["Female"] ?? 0) + compatibility;
+          genderDivisor[1] += 1;
+        }
+      } else if (user.age > 43 && user.age < 51) {
+        ageGroupAnalysis["44-50"] =
+            (ageGroupAnalysis["44-50"] ?? 0) + compatibility;
+        ageDivisor[4] += 1;
+
+        if (user.gender == "Male") {
+          genderGroupAnalysis["Male"] =
+              (genderGroupAnalysis["Male"] ?? 0) + compatibility;
+          genderDivisor[0] += 1;
+        } else {
+          genderGroupAnalysis["Female"] =
+              (genderGroupAnalysis["Female"] ?? 0) + compatibility;
+          genderDivisor[1] += 1;
+        }
+      } else if (user.age > 36 && user.age < 44) {
+        ageGroupAnalysis["37-43"] =
+            (ageGroupAnalysis["37-43"] ?? 0) + compatibility;
+        ageDivisor[3] += 1;
+
+        if (user.gender == "Male") {
+          genderGroupAnalysis["Male"] =
+              (genderGroupAnalysis["Male"] ?? 0) + compatibility;
+          genderDivisor[0] += 1;
+        } else {
+          genderGroupAnalysis["Female"] =
+              (genderGroupAnalysis["Female"] ?? 0) + compatibility;
+          genderDivisor[1] += 1;
+        }
+      } else if (user.age > 29 && user.age < 37) {
+        ageGroupAnalysis["30-36"] =
+            (ageGroupAnalysis["30-36"] ?? 0) + compatibility;
+        ageDivisor[2] += 1;
+
+        if (user.gender == "Male") {
+          genderGroupAnalysis["Male"] =
+              (genderGroupAnalysis["Male"] ?? 0) + compatibility;
+          genderDivisor[0] += 1;
+        } else {
+          genderGroupAnalysis["Female"] =
+              (genderGroupAnalysis["Female"] ?? 0) + compatibility;
+          genderDivisor[1] += 1;
+        }
+      } else if (user.age > 22 && user.age < 30) {
+        ageGroupAnalysis["23-29"] =
+            (ageGroupAnalysis["23-29"] ?? 0) + compatibility;
+        ageDivisor[1] += 1;
+
+        if (user.gender == "Male") {
+          genderGroupAnalysis["Male"] =
+              (genderGroupAnalysis["Male"] ?? 0) + compatibility;
+          genderDivisor[0] += 1;
+        } else {
+          genderGroupAnalysis["Female"] =
+              (genderGroupAnalysis["Female"] ?? 0) + compatibility;
+          genderDivisor[1] += 1;
+        }
+      } else {
+        ageGroupAnalysis["16-22"] =
+            (ageGroupAnalysis["16-22"] ?? 0) + compatibility;
+        ageDivisor[0] += 1;
+
+        if (user.gender == "Male") {
+          genderGroupAnalysis["Male"] =
+              (genderGroupAnalysis["Male"] ?? 0) + compatibility;
+          genderDivisor[0] += 1;
+        } else {
+          genderGroupAnalysis["Female"] =
+              (genderGroupAnalysis["Female"] ?? 0) + compatibility;
+          genderDivisor[1] += 1;
+        }
+      }
+    }
+    int index = 0;
+    genderGroupAnalysis.updateAll((key, value) {
+      int updatedValue = value;
+      if (genderDivisor[index] > 0) {
+        updatedValue = value ~/ genderDivisor[index];
+      }
+      index++;
+      return updatedValue;
+    });
+    index = 0;
+    ageGroupAnalysis.updateAll((key, value) {
+      int updatedValue = value;
+      if (ageDivisor[index] > 0) {
+        updatedValue = value ~/ ageDivisor[index];
+      }
+      index++;
+      return updatedValue;
+    });
+
+    return AnalysisData(
+        ageGroupAnalysis: ageGroupAnalysis,
+        genderGroupAnalysis: genderGroupAnalysis);
+  }
+
+  Future<List<Chat>> searchChats(String ownerId, String otherUserName) async {
+    List<Chat> chats = [];
+    var query1 = await chatCollection
+        .where('user1UserId', isEqualTo: ownerId)
+        .where('user2UserName', isGreaterThanOrEqualTo: otherUserName)
+        .where('user2UserName', isLessThan: '${otherUserName}z')
+        .get();
+
+    var query2 = await chatCollection
+        .where('user2UserId', isEqualTo: ownerId)
+        .where('user1UserName', isGreaterThanOrEqualTo: otherUserName)
+        .where('user1UserName', isLessThan: '${otherUserName}z')
+        .get();
+
+    List<QueryDocumentSnapshot> docs = query1.docs + query2.docs;
+    if (docs.isEmpty) {
+      return chats;
+    } else {
+      for (QueryDocumentSnapshot snapshot in docs) {
+        chats.add(Chat.fromDocumentSnapshot(snapshot));
+      }
+      return chats;
+    }
+  }
+}
+
+class AnalysisData {
+  final Map<String, int> ageGroupAnalysis;
+  final Map<String, int> genderGroupAnalysis;
+
+  AnalysisData(
+      {required this.ageGroupAnalysis, required this.genderGroupAnalysis});
 }

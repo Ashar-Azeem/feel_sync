@@ -38,6 +38,6 @@ class ChatsState extends Equatable {
 
 enum Searching { yes, no }
 
-enum SearchingState { loading, done }
-
 enum FindingChatStatus { loading, done }
+
+enum SearchingState { loading, done }
