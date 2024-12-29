@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_sync/Models/Message.dart';
 import 'package:feel_sync/Utilities/ReusableUI/CustomAvatar.dart';
@@ -11,6 +10,7 @@ import 'package:firebase_pagination/firebase_pagination.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:sizer/sizer.dart';
@@ -157,7 +157,7 @@ class _MessagingViewState extends State<MessagingView> {
                         ),
                         Padding(
                             padding: EdgeInsets.only(
-                                top: 2.w, left: 0.w, right: 4.w),
+                                top: 2.w, left: 0.w, right: 2.w),
                             child: BlocBuilder<MessagesBloc, MessagesState>(
                               buildWhen: (previous, current) {
                                 return current.chat!.chatId !=
@@ -206,128 +206,120 @@ class _MessagingViewState extends State<MessagingView> {
                                               state.chat!.getUserId(
                                                   state.receiverNumber)) {
                                             return Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 1.h),
-                                                  child: SizedBox(
-                                                    width: 90.w,
-                                                    child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Padding(
-                                                              padding: EdgeInsets
-                                                                  .only(
-                                                                      right:
-                                                                          3.w),
-                                                              child: previousMessage !=
-                                                                          null &&
-                                                                      currentMessage!
-                                                                              .senderUserId ==
-                                                                          previousMessage!
-                                                                              .senderUserId
-                                                                  ? SizedBox(
-                                                                      width:
-                                                                          6.w,
-                                                                    )
-                                                                  : BlocBuilder<
-                                                                      MessagesBloc,
-                                                                      MessagesState>(
-                                                                      builder:
-                                                                          (context,
-                                                                              state) {
-                                                                        return CustomAvatar(
-                                                                          radius:
-                                                                              0.8.w,
-                                                                          url: state.receiverNumber == 1
-                                                                              ? state.chat!.user1ProfileLoc
-                                                                              : state.chat!.user2ProfileLoc,
-                                                                        );
-                                                                      },
-                                                                    )),
-                                                          Flexible(
-                                                            fit: FlexFit.loose,
-                                                            child: Container(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .all(8),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: const Color
-                                                                    .fromARGB(
-                                                                    255,
-                                                                    78,
-                                                                    77,
-                                                                    77),
-                                                                borderRadius: previousMessage !=
-                                                                            null &&
-                                                                        currentMessage!.senderUserId ==
-                                                                            previousMessage!
-                                                                                .senderUserId
-                                                                    ? BorderRadius
-                                                                        .circular(
-                                                                            2.w)
-                                                                    : BorderRadius
-                                                                        .only(
-                                                                        topLeft: Radius.circular(max(
-                                                                            60.1 -
-                                                                                currentMessage!.content.length,
-                                                                            10)),
-                                                                        topRight: Radius.circular(max(
-                                                                            60.1 -
-                                                                                currentMessage!.content.length,
-                                                                            10)),
-                                                                        bottomRight: Radius.circular(max(
-                                                                            60.1 -
-                                                                                currentMessage!.content.length,
-                                                                            10)),
-                                                                        bottomLeft:
-                                                                            Radius.zero,
-                                                                      ),
+                                                  padding:
+                                                      EdgeInsets.only(top: 1.h),
+                                                  child: Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
+                                                      children: [
+                                                        previousMessage !=
+                                                                    null &&
+                                                                currentMessage!
+                                                                        .senderUserId ==
+                                                                    previousMessage!
+                                                                        .senderUserId
+                                                            ? SizedBox(
+                                                                width: 11.w,
+                                                              )
+                                                            : Padding(
+                                                                padding: EdgeInsets
+                                                                    .only(
+                                                                        left: 1.5
+                                                                            .w,
+                                                                        right: 1.5
+                                                                            .w),
+                                                                child: BlocBuilder<
+                                                                    MessagesBloc,
+                                                                    MessagesState>(
+                                                                  builder:
+                                                                      (context,
+                                                                          state) {
+                                                                    return CustomAvatar(
+                                                                      radius:
+                                                                          0.8.w,
+                                                                      url: state.receiverNumber == 1
+                                                                          ? state
+                                                                              .chat!
+                                                                              .user1ProfileLoc
+                                                                          : state
+                                                                              .chat!
+                                                                              .user2ProfileLoc,
+                                                                    );
+                                                                  },
+                                                                ),
                                                               ),
-                                                              child: Stack(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .bottomRight,
-                                                                  children: [
-                                                                    Padding(
-                                                                      padding: EdgeInsets.only(
-                                                                          bottom:
-                                                                              4.w),
-                                                                      child:
-                                                                          Text(
+                                                        ChatBubble(
+                                                          backGroundColor:
+                                                              const Color
+                                                                  .fromARGB(255,
+                                                                  66, 74, 100),
+                                                          elevation: 0,
+                                                          shadowColor: null,
+                                                          clipper: previousMessage !=
+                                                                      null &&
+                                                                  (currentMessage!
+                                                                          .senderUserId ==
+                                                                      previousMessage!
+                                                                          .senderUserId)
+                                                              ? ChatBubbleClipper5(
+                                                                  type: BubbleType
+                                                                      .receiverBubble)
+                                                              : ChatBubbleClipper4(
+                                                                  type: BubbleType
+                                                                      .receiverBubble),
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Container(
+                                                            constraints:
+                                                                BoxConstraints(
+                                                                    maxWidth:
+                                                                        70.w),
+                                                            child: Stack(
+                                                              children: [
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(
+                                                                      bottom:
+                                                                          6.w,
+                                                                      right: currentMessage!.content.length <
+                                                                              25
+                                                                          ? 8.w
+                                                                          : 0),
+                                                                  child: Text(
+                                                                    currentMessage!
+                                                                        .content,
+                                                                    softWrap:
+                                                                        true,
+                                                                    style: const TextStyle(
+                                                                        fontSize:
+                                                                            16),
+                                                                  ),
+                                                                ),
+                                                                Positioned(
+                                                                  bottom: 0,
+                                                                  right: 0,
+                                                                  child: Text(
+                                                                    DateFormat(
+                                                                      'hh:mm a',
+                                                                    ).format(
                                                                         currentMessage!
-                                                                            .content,
-                                                                        softWrap:
-                                                                            true,
-                                                                        style: const TextStyle(
-                                                                            fontSize:
-                                                                                16),
-                                                                      ),
-                                                                    ),
-                                                                    Text(
-                                                                      DateFormat(
-                                                                              'hh:mm a')
-                                                                          .format(
-                                                                              currentMessage!.time),
-                                                                      style:
-                                                                          const TextStyle(
+                                                                            .time),
+                                                                    style: const TextStyle(
                                                                         fontSize:
                                                                             10,
                                                                         fontWeight:
-                                                                            FontWeight.w200,
-                                                                      ),
-                                                                    )
-                                                                  ]),
+                                                                            FontWeight.w200),
+                                                                  ),
+                                                                )
+                                                              ],
                                                             ),
                                                           ),
-                                                        ]),
-                                                  ),
+                                                        ),
+                                                      ]),
                                                 ),
                                                 previousMessage != null &&
                                                         !isSameDay(
@@ -344,19 +336,18 @@ class _MessagingViewState extends State<MessagingView> {
                                                           alignment:
                                                               Alignment.center,
                                                           child: Text(
-                                                            DateFormat
-                                                                    .MMMMEEEEd()
-                                                                .format(
-                                                                    currentMessage!
-                                                                        .time),
-                                                            style: const TextStyle(
-                                                                color: Color
-                                                                    .fromARGB(
-                                                                        255,
-                                                                        188,
-                                                                        188,
-                                                                        191)),
-                                                          ),
+                                                              DateFormat
+                                                                      .MMMMEEEEd()
+                                                                  .format(
+                                                                      currentMessage!
+                                                                          .time),
+                                                              style: const TextStyle(
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          188,
+                                                                          188,
+                                                                          191))),
                                                         ),
                                                       )
                                                     : const SizedBox.shrink(),
@@ -366,99 +357,72 @@ class _MessagingViewState extends State<MessagingView> {
                                             return Column(
                                               children: [
                                                 Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 30.w,
-                                                        bottom: 1.h),
-                                                    child: SizedBox(
-                                                      width: 90.w,
-                                                      child: Align(
-                                                          alignment: Alignment
-                                                              .centerRight,
-                                                          child: Container(
-                                                            padding: currentMessage!
-                                                                        .content
-                                                                        .length <
-                                                                    32
-                                                                ? EdgeInsets
-                                                                    .only(
-                                                                        left:
-                                                                            5.w,
-                                                                        right:
-                                                                            5.w)
-                                                                : const EdgeInsets
-                                                                    .all(8),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: const Color
-                                                                  .fromARGB(
-                                                                  210,
-                                                                  119,
-                                                                  122,
-                                                                  254),
-                                                              borderRadius: previousMessage !=
-                                                                          null &&
-                                                                      currentMessage!
-                                                                              .senderUserId ==
-                                                                          previousMessage!
-                                                                              .senderUserId
-                                                                  ? BorderRadius
-                                                                      .circular(
-                                                                          2.w)
-                                                                  : BorderRadius
-                                                                      .only(
-                                                                      topLeft: Radius.circular(max(
-                                                                          60.1 -
-                                                                              currentMessage!.content.length,
-                                                                          10)),
-                                                                      topRight: Radius.circular(max(
-                                                                          60.1 -
-                                                                              currentMessage!.content.length,
-                                                                          10)),
-                                                                      bottomLeft: Radius.circular(max(
-                                                                          60.1 -
-                                                                              currentMessage!.content.length,
-                                                                          10)),
-                                                                      bottomRight:
-                                                                          Radius
-                                                                              .zero,
-                                                                    ),
-                                                            ),
-                                                            child: Stack(
-                                                              alignment: Alignment
-                                                                  .bottomRight,
-                                                              children: [
-                                                                Padding(
-                                                                  padding: EdgeInsets
-                                                                      .only(
-                                                                          bottom:
-                                                                              4.w),
-                                                                  child: Text(
-                                                                    currentMessage!
-                                                                        .content,
-                                                                    softWrap:
-                                                                        true,
-                                                                    style: const TextStyle(
-                                                                        fontSize:
-                                                                            16),
-                                                                  ),
-                                                                ),
-                                                                Text(
-                                                                  DateFormat(
-                                                                    'hh:mm a',
-                                                                  ).format(
-                                                                      currentMessage!
-                                                                          .time),
-                                                                  style: const TextStyle(
+                                                  padding:
+                                                      EdgeInsets.only(top: 1.h),
+                                                  child: ChatBubble(
+                                                    backGroundColor:
+                                                        const Color.fromARGB(
+                                                            255, 7, 108, 148),
+                                                    elevation: 0,
+                                                    shadowColor: null,
+                                                    clipper: previousMessage !=
+                                                                null &&
+                                                            (currentMessage!
+                                                                    .senderUserId ==
+                                                                previousMessage!
+                                                                    .senderUserId)
+                                                        ? ChatBubbleClipper5(
+                                                            type: BubbleType
+                                                                .sendBubble)
+                                                        : ChatBubbleClipper3(
+                                                            type: BubbleType
+                                                                .sendBubble),
+                                                    alignment:
+                                                        Alignment.centerRight,
+                                                    child: Container(
+                                                      constraints:
+                                                          BoxConstraints(
+                                                              maxWidth: 75.w),
+                                                      child: Stack(
+                                                        alignment: Alignment
+                                                            .bottomRight,
+                                                        children: [
+                                                          Padding(
+                                                            padding: EdgeInsets.only(
+                                                                bottom: 6.w,
+                                                                right: currentMessage!
+                                                                            .content
+                                                                            .length <
+                                                                        25
+                                                                    ? 8.w
+                                                                    : 0),
+                                                            child: Text(
+                                                              currentMessage!
+                                                                  .content,
+                                                              softWrap: true,
+                                                              style:
+                                                                  const TextStyle(
                                                                       fontSize:
-                                                                          10,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w200),
-                                                                )
-                                                              ],
+                                                                          16),
                                                             ),
-                                                          )),
-                                                    )),
+                                                          ),
+                                                          Text(
+                                                            DateFormat(
+                                                              'hh:mm a',
+                                                            ).format(
+                                                                currentMessage!
+                                                                    .time),
+                                                            style: const TextStyle(
+                                                                fontSize: 10,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w200),
+                                                          )
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
                                                 previousMessage != null &&
                                                         !isSameDay(
                                                             previousMessage!
@@ -532,8 +496,13 @@ class _MessagingViewState extends State<MessagingView> {
                         Padding(
                           padding: EdgeInsets.only(left: 3.w, right: 0),
                           child: SizedBox(
-                            width: 62.w,
+                            width: 65.w,
                             child: TextField(
+                              onChanged: (value) {
+                                context
+                                    .read<MessagesBloc>()
+                                    .add(ButtonVisibility(text: value));
+                              },
                               maxLines: 5,
                               expands: false,
                               minLines: 1,
@@ -552,29 +521,47 @@ class _MessagingViewState extends State<MessagingView> {
                         BlocBuilder<MessagesBloc, MessagesState>(
                           buildWhen: (previous, current) =>
                               previous.sendMessageLoading !=
-                              current.sendMessageLoading,
+                                  current.sendMessageLoading ||
+                              previous.buttonVisibility !=
+                                  current.buttonVisibility,
                           builder: (context, state) {
-                            return TextButton(
-                                onPressed: () {
+                            return GestureDetector(
+                                onTap: () {
                                   if (message.text.trim().isNotEmpty) {
                                     context.read<MessagesBloc>().add(
                                         SendMessage(
-                                            messageText: message.text.trim(),
-                                            controller: message));
+                                            messageText: message.text.trim()));
+                                    message.text = '';
+                                    context.read<MessagesBloc>().add(
+                                        ButtonVisibility(text: message.text));
                                   }
                                 },
-                                child: state.sendMessageLoading
-                                    ? const CupertinoActivityIndicator(
-                                        color: Colors.blue,
-                                      )
-                                    : const Text(
-                                        'Send',
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: Color.fromARGB(
-                                                255, 225, 225, 228)),
-                                      ));
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: state.sendMessageLoading
+                                            ? 5.w
+                                            : 2.w),
+                                    child: state.sendMessageLoading
+                                        ? const CupertinoActivityIndicator(
+                                            color: Colors.blue,
+                                          )
+                                        : state.buttonVisibility
+                                            ? Container(
+                                                width: 10.w,
+                                                height: 10.w,
+                                                decoration: const BoxDecoration(
+                                                  color: Colors.blue,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Center(
+                                                  child: Icon(
+                                                    Icons.send,
+                                                    color: Colors.white,
+                                                    size: 5.w,
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox.shrink()));
                           },
                         )
                       ],

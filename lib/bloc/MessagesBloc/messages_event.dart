@@ -7,6 +7,12 @@ abstract class MessagesEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class ButtonVisibility extends MessagesEvent {
+  final String text;
+
+  const ButtonVisibility({required this.text});
+}
+
 class SeenChecker extends MessagesEvent {}
 
 class SeenChanged extends MessagesEvent {
@@ -27,9 +33,8 @@ class DisposeSeen extends MessagesEvent {}
 
 class SendMessage extends MessagesEvent {
   final String messageText;
-  final TextEditingController controller;
 
-  const SendMessage({required this.controller, required this.messageText});
+  const SendMessage({required this.messageText});
 }
 
 class MessageSeenAction extends MessagesEvent {}

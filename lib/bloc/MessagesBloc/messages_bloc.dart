@@ -6,13 +6,13 @@ import 'package:feel_sync/EmotionDetector/EmotionDetectionManager.dart';
 import 'package:feel_sync/Models/Chat.dart';
 import 'package:feel_sync/Models/user.dart';
 import 'package:feel_sync/Services/CRUD.dart';
-import 'package:flutter/material.dart';
 part 'messages_event.dart';
 part 'messages_state.dart';
 
 class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
   late StreamSubscription _documentSubscription;
   MessagesBloc() : super(const MessagesState()) {
+    on<ButtonVisibility>(buttonVisibility);
     on<SeenChecker>(onSeenChcker);
     on<SeenChanged>(
       (event, emit) {
@@ -23,6 +23,14 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
     on<SendMessage>(sendMessage);
     on<DisposeSeen>(disposeSeen);
     on<MessageSeenAction>(messageSeenAction);
+  }
+
+  void buttonVisibility(ButtonVisibility event, Emitter<MessagesState> emit) {
+    if (event.text.isEmpty && state.buttonVisibility) {
+      emit(state.copyWith(buttonVisibility: false));
+    } else if (event.text.isNotEmpty && !state.buttonVisibility) {
+      emit(state.copyWith(buttonVisibility: true));
+    }
   }
 
   void initChat(InitChat event, Emitter<MessagesState> emit) {
@@ -88,7 +96,6 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
         .insertMessage(senderId, receiverId, state.chat!, event.messageText,
             DateTime.now(), emotionKey, state.receiverNumber)
         .then((chat) {
-      event.controller.text = '';
       emit(state.copyWith(
         chat: chat.copyWith(),
         sendMessageLoading: false,
