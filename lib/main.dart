@@ -4,6 +4,7 @@ import 'package:feel_sync/Services/AuthService.dart';
 import 'package:feel_sync/Utilities/Permissions.dart';
 import 'package:feel_sync/Views/MainUI.dart';
 import 'package:feel_sync/Views/login.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
@@ -60,10 +61,8 @@ class Main extends StatelessWidget {
               {
                 return const Scaffold(
                     body: Center(
-                  child: CircularProgressIndicator(
+                  child: CupertinoActivityIndicator(
                     color: Colors.white,
-                    strokeWidth: 2,
-                    strokeCap: StrokeCap.round,
                   ),
                 ));
               }
