@@ -58,14 +58,14 @@ class ChatsBloc extends Bloc<ChatsEvent, ChatsState> {
               user1Seen: true,
               user2Seen: false,
               compatibility: 0,
-              user1Emotions: const {
+              user1Emotions: {
                 'Sadness': 0,
                 'Joy': 0,
                 'Love': 0,
                 'Anger': 0,
                 'Fear': 0
               },
-              user2Emotions: const {
+              user2Emotions: {
                 'Sadness': 0,
                 'Joy': 0,
                 'Love': 0,

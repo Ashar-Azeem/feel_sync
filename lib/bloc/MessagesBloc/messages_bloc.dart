@@ -97,7 +97,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessagesState> {
             DateTime.now(), emotionKey, state.receiverNumber)
         .then((chat) {
       emit(state.copyWith(
-        chat: chat.copyWith(),
+        chat: chat,
         sendMessageLoading: false,
       ));
     });

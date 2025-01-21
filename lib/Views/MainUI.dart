@@ -9,6 +9,7 @@ import 'package:feel_sync/bloc/ExploreUsers/explore_users_bloc.dart';
 import 'package:feel_sync/bloc/MessagesBloc/messages_bloc.dart';
 import 'package:feel_sync/bloc/user/user_bloc.dart';
 import 'package:feel_sync/bloc/user/user_state.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
@@ -117,12 +118,7 @@ class _MainUIState extends State<MainUI> {
           } else {
             return const Scaffold(
                 body: Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-                strokeCap: StrokeCap.round,
-              ),
-            ));
+                    child: CupertinoActivityIndicator(color: Colors.white)));
           }
         },
       ),

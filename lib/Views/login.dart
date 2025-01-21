@@ -3,6 +3,7 @@ import 'package:feel_sync/Utilities/ReusableUI/ErrorMessage.dart';
 import 'package:feel_sync/Utilities/LoginAndRegisterationStatus.dart';
 import 'package:feel_sync/bloc/LoginBloc/login&Registration_bloc.dart';
 import 'package:feel_sync/bloc/PasswordBloc/password_visibility_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -61,7 +62,7 @@ class _LoginViewState extends State<LoginView> {
                     shaderCallback: (Rect bounds) {
                       return const LinearGradient(
                         colors: [
-                          Color.fromARGB(255, 2, 93, 205),
+                          Color(0xFF025DCD),
                           Color.fromARGB(255, 155, 225, 250),
                         ],
                         begin: Alignment.topLeft,
@@ -163,11 +164,8 @@ class _LoginViewState extends State<LoginView> {
                                     borderRadius: BorderRadius.circular(8))),
                             child: state.status ==
                                     Loginandregisterationstatus.loading
-                                ? const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    strokeCap: StrokeCap.round,
-                                    color: Colors.white,
-                                  )
+                                ? const CupertinoActivityIndicator(
+                                    color: Colors.white)
                                 : const Text(
                                     "Login",
                                     style: TextStyle(color: Colors.white),

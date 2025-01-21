@@ -52,7 +52,7 @@ class _MessagingViewState extends State<MessagingView> {
         appBar: AppBar(
           actions: [
             BlocBuilder<MessagesBloc, MessagesState>(
-              buildWhen: (previous, current) => false,
+              buildWhen: (previous, current) => previous.chat != current.chat,
               builder: (context, state) {
                 return IconButton(
                     onPressed: () {
@@ -257,7 +257,7 @@ class _MessagingViewState extends State<MessagingView> {
                                                           backGroundColor:
                                                               const Color
                                                                   .fromARGB(255,
-                                                                  66, 74, 100),
+                                                                  91, 101, 137),
                                                           elevation: 0,
                                                           shadowColor: null,
                                                           clipper: previousMessage !=
@@ -362,7 +362,7 @@ class _MessagingViewState extends State<MessagingView> {
                                                   child: ChatBubble(
                                                     backGroundColor:
                                                         const Color.fromARGB(
-                                                            255, 7, 108, 148),
+                                                            255, 15, 133, 180),
                                                     elevation: 0,
                                                     shadowColor: null,
                                                     clipper: previousMessage !=

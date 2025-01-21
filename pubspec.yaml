@@ -60,6 +60,7 @@ dependencies:
   intl: ^0.20.1
   fl_chart: ^0.69.2
   flutter_chat_bubble: ^2.0.2
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -85,9 +86,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/Logo.png
-    - assets/NameLogo.png
     - assets/blankprofile.png
+    - assets/AppIcon.png
     - assets/emotion_detection.tflite
     - assets/tfidf_vocab.json
     - assets/stop_words.json
@@ -117,3 +117,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: true
+  ios: "AppIcon"
+  image_path: "assets/AppIcon.png"
+  remove_alpha_ios: true

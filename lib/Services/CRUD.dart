@@ -276,45 +276,59 @@ class Crud {
           Timestamp.fromDate(time), // Convert DateTime to Firestore Timestamp
     });
 
-    await updateChat(
-        chatId: demoChat.chatId!,
+    return await updateChat(
+        chat: demoChat,
         emotionKey: emotionKey,
         receiverNumber: receiverNumber,
         lastMessage: content);
-
-    return demoChat;
   }
 
-  Future<void> updateChat(
-      {required String chatId,
+  Future<Chat> updateChat(
+      {required Chat chat,
       required String emotionKey,
       required int receiverNumber,
       required String lastMessage}) async {
-    try {
-      // Reference to the specific chat document
-      final DocumentReference chatDoc =
-          FirebaseFirestore.instance.collection('chats').doc(chatId);
-      if (receiverNumber == 1) {
-        await chatDoc.update({
-          'user${2}Emotions.$emotionKey':
-              FieldValue.increment(1), // Update the sender userEmotions map
+    // Reference to the specific chat document
+    final DocumentReference chatDoc =
+        FirebaseFirestore.instance.collection('chats').doc(chat.chatId);
+    if (receiverNumber == 1) {
+      await chatDoc.update({
+        'user${2}Emotions.$emotionKey':
+            FieldValue.increment(1), // Update the sender userEmotions map
 
-          'user${receiverNumber}Seen': false,
-          'lastMessage': lastMessage,
-          'lastMessageDateTime': DateTime.now()
-        });
-      } else {
-        await chatDoc.update({
-          'user${1}Emotions.$emotionKey':
-              FieldValue.increment(1), // Update the sender userEmotions map
-          'user${receiverNumber}Seen': false,
-          'lastMessage': lastMessage,
-          'lastMessageDateTime': DateTime.now()
-        });
-      }
-    } catch (e) {
-//
+        'user${receiverNumber}Seen': false,
+        'lastMessage': lastMessage,
+        'lastMessageDateTime': DateTime.now()
+      });
+      //Making local changes
+      Map<String, int> map = Map.from(chat.user2Emotions);
+      print(map[emotionKey]);
+      map[emotionKey] = map[emotionKey]! + 1;
+      print(map[emotionKey]);
+      chat = chat.copyWith(
+          user2Emotions: map,
+          lastMessage: lastMessage,
+          lastMessageDateTime: DateTime.now(),
+          user1Seen: false);
+    } else {
+      await chatDoc.update({
+        'user${1}Emotions.$emotionKey':
+            FieldValue.increment(1), // Update the sender userEmotions map
+        'user${receiverNumber}Seen': false,
+        'lastMessage': lastMessage,
+        'lastMessageDateTime': DateTime.now()
+      });
+      Map<String, int> map = Map.from(chat.user1Emotions);
+      print(map);
+      map[emotionKey] = map[emotionKey]! + 1;
+      print(map);
+      chat = chat.copyWith(
+          lastMessage: lastMessage,
+          user1Emotions: map,
+          lastMessageDateTime: DateTime.now(),
+          user2Seen: false);
     }
+    return chat;
   }
 
   Future<void> messageSeenUpdate(

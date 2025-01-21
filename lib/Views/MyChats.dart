@@ -138,7 +138,8 @@ class _MyChatsViewState extends State<MyChatsView> {
                         child: RichText(
                           textAlign: TextAlign.center,
                           text: TextSpan(
-                            text: "Your chat list is empty! Head over to the ",
+                            text:
+                                "Your dont have any chats yet! Head over to the ",
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 16, height: 1.3),
                             children: [

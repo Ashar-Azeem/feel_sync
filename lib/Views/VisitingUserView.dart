@@ -456,8 +456,7 @@ class VisitingUserView extends StatelessWidget {
                                                     SizedBox(
                                                         width: 71.w,
                                                         child: ReadMoreText(
-                                                          state.user!.bio
-                                                                  .isEmpty
+                                                          hostUser.bio.isEmpty
                                                               ? defaultBio
                                                               : state.user!.bio,
                                                           trimMode:

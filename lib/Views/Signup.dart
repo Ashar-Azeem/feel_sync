@@ -6,6 +6,7 @@ import 'package:feel_sync/bloc/DateSelector/date_selector_bloc.dart';
 import 'package:feel_sync/bloc/ImagePicker/image_picker_bloc.dart';
 import 'package:feel_sync/bloc/LoginBloc/login&Registration_bloc.dart';
 import 'package:feel_sync/bloc/PasswordBloc/password_visibility_bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -495,11 +496,8 @@ class _SignupViewState extends State<SignupView> {
                                     borderRadius: BorderRadius.circular(8))),
                             child: state.status ==
                                     Loginandregisterationstatus.loading
-                                ? const CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    strokeCap: StrokeCap.round,
-                                    color: Colors.white,
-                                  )
+                                ? const CupertinoActivityIndicator(
+                                    color: Colors.white)
                                 : const Text(
                                     "Login",
                                     style: TextStyle(color: Colors.white),
