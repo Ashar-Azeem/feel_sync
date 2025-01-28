@@ -25,7 +25,7 @@ class ExploreViewTile extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.only(left: 4.w, right: 2.w),
         child: SizedBox(
-          height: 10.h,
+          height: 11.h,
           width: 100.w,
           child: Row(
             children: [

@@ -97,15 +97,21 @@ class CompatibilityShimmerContainer extends StatelessWidget {
               leftTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
-                  reservedSize: 40,
+                  reservedSize: 30,
                   interval: 10, // Fixed interval of 10
                   getTitlesWidget: (value, meta) {
                     return Padding(
-                      padding: EdgeInsets.only(top: 4.w),
+                      padding: EdgeInsets.only(top: 2.w),
                       child: Text(
                         "${value.toInt()}%",
-                        style: const TextStyle(
-                            color: Color.fromARGB(211, 255, 255, 255)),
+                        style: TextStyle(
+                            color: const Color.fromARGB(
+                              211,
+                              255,
+                              255,
+                              255,
+                            ),
+                            fontSize: 2.w),
                       ),
                     );
                   },
@@ -128,8 +134,9 @@ class CompatibilityShimmerContainer extends StatelessWidget {
                         data.keys.elementAt(
                           index,
                         ),
-                        style: const TextStyle(
-                            color: Color.fromARGB(211, 255, 255, 255)),
+                        style: TextStyle(
+                            color: const Color.fromARGB(211, 255, 255, 255),
+                            fontSize: 2.5.w),
                         textAlign: TextAlign.center,
                       ),
                     );
@@ -157,7 +164,9 @@ class CompatibilityShimmerContainer extends StatelessWidget {
                   return BarTooltipItem(
                     "$key\n",
                     const TextStyle(
-                        fontWeight: FontWeight.bold, color: Colors.white),
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                     children: [
                       TextSpan(
                         text: "${rod.toY.toStringAsFixed(1)}%",

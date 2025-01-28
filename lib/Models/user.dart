@@ -7,7 +7,7 @@ class User extends Equatable {
   final String userName;
   final String bio;
   final String? profileLocation;
-  final String token;
+  final String? token;
   final int age;
   final String gender;
   final int compatibility;
@@ -53,7 +53,7 @@ class User extends Equatable {
         userName: data['userName'] as String,
         bio: data['bio'] as String,
         profileLocation: data['profileLocation'] as String?,
-        token: data['token'] as String,
+        token: data['token'] as String?,
         age: data['age'] as int,
         gender: data['gender'] as String,
         compatibility: data['compatibility'] as int,

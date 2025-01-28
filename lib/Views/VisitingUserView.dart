@@ -4,7 +4,6 @@ import 'package:feel_sync/Utilities/constants.dart';
 import 'package:feel_sync/bloc/ChatsBloc/chats_bloc.dart';
 import 'package:feel_sync/bloc/VisitingUserCompatibility/visiting_user_compatibility_bloc.dart';
 import 'package:feel_sync/bloc/user/user_bloc.dart';
-import 'package:feel_sync/bloc/user/user_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -103,7 +102,7 @@ class VisitingUserView extends StatelessWidget {
                       child: Padding(
                         padding: EdgeInsets.only(top: 4.h),
                         child: SizedBox(
-                          height: 14.h,
+                          height: 16.h,
                           child: Row(
                             children: [
                               SizedBox(
@@ -134,16 +133,18 @@ class VisitingUserView extends StatelessWidget {
                                             Padding(
                                               padding: EdgeInsets.only(
                                                   bottom: 0.75.w),
-                                              child: const Text(
+                                              child: Text(
                                                 "Name",
                                                 style: TextStyle(
-                                                    color: Color.fromARGB(
-                                                        255, 171, 170, 170)),
+                                                    color: const Color.fromARGB(
+                                                        255, 171, 170, 170),
+                                                    fontSize: 3.w),
                                               ),
                                             ),
                                             SizedBox(
                                               width: 50.w,
                                               child: Text(
+                                                style: TextStyle(fontSize: 3.w),
                                                 hostUser.name,
                                                 softWrap: true,
                                                 maxLines: 1,
@@ -182,16 +183,23 @@ class VisitingUserView extends StatelessWidget {
                                               Padding(
                                                 padding: EdgeInsets.only(
                                                     bottom: 0.75.w),
-                                                child: const Text(
+                                                child: Text(
                                                   "User Name",
                                                   style: TextStyle(
-                                                      color: Color.fromARGB(
-                                                          255, 171, 170, 170)),
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255,
+                                                              171,
+                                                              170,
+                                                              170),
+                                                      fontSize: 3.w),
                                                 ),
                                               ),
                                               SizedBox(
                                                 width: 45.w,
                                                 child: Text(
+                                                  style:
+                                                      TextStyle(fontSize: 3.w),
                                                   hostUser.userName,
                                                   softWrap: true,
                                                   maxLines: 1,
@@ -240,10 +248,11 @@ class VisitingUserView extends StatelessWidget {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
-                                      const Text(
+                                      Text(
                                         "Compatibility",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w600),
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 3.w),
                                       ),
                                       BlocBuilder<VisitingUserCompatibilityBloc,
                                           VisitingUserCompatibilityState>(
@@ -301,11 +310,12 @@ class VisitingUserView extends StatelessWidget {
                                       BlocBuilder<VisitingUserCompatibilityBloc,
                                           VisitingUserCompatibilityState>(
                                         builder: (context, state) {
-                                          return Text(state
-                                                      .compatibilityMeasure ==
-                                                  null
-                                              ? "0"
-                                              : "${state.compatibilityMeasure}%");
+                                          return Text(
+                                            state.compatibilityMeasure == null
+                                                ? "0"
+                                                : "${state.compatibilityMeasure!.toInt()}%",
+                                            style: TextStyle(fontSize: 3.w),
+                                          );
                                         },
                                       )
                                     ],
@@ -327,10 +337,11 @@ class VisitingUserView extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceAround,
                                       children: [
-                                        const Text(
+                                        Text(
                                           "Traits",
                                           style: TextStyle(
-                                              fontWeight: FontWeight.w600),
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 3.w),
                                         ),
                                         SizedBox(
                                           height: 6.h,
@@ -355,6 +366,7 @@ class VisitingUserView extends StatelessWidget {
                                           padding: EdgeInsets.only(bottom: 1.w),
                                           child: RichText(
                                             text: TextSpan(
+                                              style: TextStyle(fontSize: 2.5.w),
                                               children: <TextSpan>[
                                                 const TextSpan(
                                                     text: 'Age: ',
@@ -375,6 +387,7 @@ class VisitingUserView extends StatelessWidget {
                                         ),
                                         RichText(
                                           text: TextSpan(
+                                            style: TextStyle(fontSize: 2.5.w),
                                             children: <TextSpan>[
                                               const TextSpan(
                                                   text: 'Gender: ',
@@ -416,70 +429,57 @@ class VisitingUserView extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                              BlocBuilder<UserBloc, UserState>(
-                                buildWhen: (previous, current) {
-                                  if (previous.user!.bio != current.user!.bio) {
-                                    return true;
-                                  } else {
-                                    return false;
-                                  }
-                                },
-                                builder: (context, state) {
-                                  return Row(
+                              Row(
+                                children: [
+                                  Column(
                                     children: [
-                                      Column(
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
-                                          Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              SizedBox(
-                                                width: 74.w,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Padding(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: 0.75.w),
-                                                      child: const Text(
-                                                        "About",
-                                                        style: TextStyle(
-                                                            color:
-                                                                Color.fromARGB(
-                                                                    255,
-                                                                    171,
-                                                                    170,
-                                                                    170)),
-                                                      ),
-                                                    ),
-                                                    SizedBox(
-                                                        width: 71.w,
-                                                        child: ReadMoreText(
-                                                          hostUser.bio.isEmpty
-                                                              ? defaultBio
-                                                              : state.user!.bio,
-                                                          trimMode:
-                                                              TrimMode.Length,
-                                                          trimLength: 300,
-                                                          colorClickableText:
-                                                              const Color
-                                                                  .fromARGB(
-                                                                  255,
-                                                                  123,
-                                                                  211,
-                                                                  243),
-                                                        )),
-                                                  ],
+                                          SizedBox(
+                                            width: 74.w,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      bottom: 0.75.w),
+                                                  child: Text(
+                                                    "About",
+                                                    style: TextStyle(
+                                                        color: const Color
+                                                            .fromARGB(
+                                                            255, 171, 170, 170),
+                                                        fontSize: 3.w),
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                                SizedBox(
+                                                    width: 71.w,
+                                                    child: ReadMoreText(
+                                                      hostUser.bio.isEmpty
+                                                          ? defaultBio
+                                                          : hostUser.bio,
+                                                      style: TextStyle(
+                                                          fontSize: 3.w),
+                                                      trimMode: TrimMode.Length,
+                                                      trimLength: 300,
+                                                      colorClickableText:
+                                                          const Color.fromARGB(
+                                                              255,
+                                                              123,
+                                                              211,
+                                                              243),
+                                                    )),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
                                     ],
-                                  );
-                                },
+                                  ),
+                                ],
                               )
                             ],
                           ),

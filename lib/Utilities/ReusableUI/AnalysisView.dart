@@ -92,12 +92,12 @@ class CompatibilityBarCharts extends StatelessWidget {
             leftTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 40,
+                reservedSize: 35,
                 interval: 10, // Fixed interval of 10
                 getTitlesWidget: (value, meta) {
-                  return Padding(
-                    padding: EdgeInsets.only(top: 4.w),
-                    child: Text("${value.toInt()}%"),
+                  return Text(
+                    "${value.toInt()}%",
+                    style: TextStyle(fontSize: 2.w),
                   );
                 },
               ),
@@ -118,6 +118,7 @@ class CompatibilityBarCharts extends StatelessWidget {
                     child: Text(
                       data.keys.elementAt(index),
                       textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 2.5.w),
                     ),
                   );
                 },
@@ -143,8 +144,10 @@ class CompatibilityBarCharts extends StatelessWidget {
                 final key = data.keys.elementAt(group.x.toInt());
                 return BarTooltipItem(
                   "$key\n",
-                  const TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.white),
+                  TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 2.w),
                   children: [
                     TextSpan(
                       text: "${rod.toY.toStringAsFixed(1)}%",

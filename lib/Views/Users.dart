@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:feel_sync/Utilities/ReusableUI/ExploreViewTile.dart';
 import 'package:feel_sync/Utilities/ReusableUI/ShimmerLoaderExploreView.dart';
 import 'package:feel_sync/Models/user.dart';
-import 'package:feel_sync/Services/AuthService.dart';
 import 'package:feel_sync/Views/MessagingView.dart';
 import 'package:feel_sync/bloc/ChatsBloc/chats_bloc.dart' as chatsBloc;
 import 'package:feel_sync/bloc/ExploreUsers/explore_users_bloc.dart';
@@ -127,11 +126,11 @@ class _UsersListViewState extends State<UsersListView> {
                           enableSuggestions: true,
                           autocorrect: false,
                           controller: search,
-                          decoration: InputDecoration(
+                          textAlignVertical: TextAlignVertical.center,
+                          decoration: const InputDecoration(
                               border: InputBorder.none,
                               hintText: 'Search',
-                              contentPadding: EdgeInsets.only(top: 1.5.h),
-                              prefixIcon: const Icon(Icons.search)),
+                              prefixIcon: Icon(Icons.search)),
                           textAlign: TextAlign.left,
                         ),
                       ),
@@ -164,9 +163,9 @@ class _UsersListViewState extends State<UsersListView> {
                           initialLoader: const ExploreViewShimmerLoader(),
                           query: FirebaseFirestore.instance
                               .collection('users')
-                              .where(FieldPath.documentId,
-                                  isNotEqualTo: AuthService().getUser()!.uid)
-                              .orderBy("userName"),
+                              .where('userName', whereNotIn: [
+                            context.read<UserBloc>().state.user!.userName
+                          ]).orderBy("userName"),
                           itemBuilder: (context, snapshot, index) {
                             context
                                 .read<ExploreUsersBloc>()

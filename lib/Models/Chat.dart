@@ -5,11 +5,11 @@ class Chat extends Equatable {
   final String? chatId;
   final String user1UserId;
   final String user1UserName;
-  final String user1FCMToken;
+  final String? user1FCMToken;
   final String? user1ProfileLoc;
   final String user2UserId;
   final String user2UserName;
-  final String user2FCMToken;
+  final String? user2FCMToken;
   final String? user2ProfileLoc;
   final bool user1Seen;
   final bool user2Seen;
@@ -83,12 +83,12 @@ class Chat extends Equatable {
       chatId: result.id,
       user1UserId: data['user1UserId'] as String,
       user1UserName: data['user1UserName'] as String,
-      user1FCMToken: data['user1FCMToken'] as String,
-      user1ProfileLoc: data['user1ProfileLoc'] as String,
+      user1FCMToken: data['user1FCMToken'],
+      user1ProfileLoc: data['user1ProfileLoc'],
       user2UserId: data['user2UserId'] as String,
       user2UserName: data['user2UserName'] as String,
-      user2FCMToken: data['user2FCMToken'] as String,
-      user2ProfileLoc: data['user2ProfileLoc'] as String,
+      user2FCMToken: data['user2FCMToken'],
+      user2ProfileLoc: data['user2ProfileLoc'],
       user1Seen: data['user1Seen'] as bool,
       user2Seen: data['user2Seen'] as bool,
       compatibility: value.toDouble(),
@@ -105,12 +105,12 @@ class Chat extends Equatable {
       chatId: id,
       user1UserId: data['user1UserId'] as String,
       user1UserName: data['user1UserName'] as String,
-      user1FCMToken: data['user1FCMToken'] as String,
-      user1ProfileLoc: data['user1ProfileLoc'] as String,
+      user1FCMToken: data['user1FCMToken'],
+      user1ProfileLoc: data['user1ProfileLoc'],
       user2UserId: data['user2UserId'] as String,
       user2UserName: data['user2UserName'] as String,
-      user2FCMToken: data['user2FCMToken'] as String,
-      user2ProfileLoc: data['user2ProfileLoc'] as String,
+      user2FCMToken: data['user2FCMToken'],
+      user2ProfileLoc: data['user2ProfileLoc'],
       user1Seen: data['user1Seen'] as bool,
       user2Seen: data['user2Seen'] as bool,
       compatibility: value.toDouble(),

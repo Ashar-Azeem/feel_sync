@@ -12,14 +12,13 @@ import 'package:sizer/sizer.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await AuthService().initialize();
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
       systemNavigationBarIconBrightness: Brightness.light,
       systemNavigationBarColor: Color.fromARGB(255, 6, 6, 14)));
   await requestNotificationPermission();
-
   runApp(Sizer(builder: (context, orientation, screenType) {
     return MaterialApp(
       title: 'FeelSync',

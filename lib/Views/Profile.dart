@@ -144,7 +144,7 @@ class ProfileView extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.only(top: 5.h),
                 child: SizedBox(
-                  height: 14.h,
+                  height: 16.h,
                   child: Row(
                     children: [
                       SizedBox(
@@ -183,16 +183,18 @@ class ProfileView extends StatelessWidget {
                                         Padding(
                                           padding:
                                               EdgeInsets.only(bottom: 0.75.w),
-                                          child: const Text(
+                                          child: Text(
                                             "Name",
                                             style: TextStyle(
-                                                color: Color.fromARGB(
-                                                    255, 171, 170, 170)),
+                                                color: const Color.fromARGB(
+                                                    255, 171, 170, 170),
+                                                fontSize: 3.w),
                                           ),
                                         ),
                                         SizedBox(
                                           width: 50.w,
                                           child: Text(
+                                            style: TextStyle(fontSize: 3.w),
                                             state.user!.name,
                                             softWrap: true,
                                             maxLines: 1,
@@ -255,11 +257,12 @@ class ProfileView extends StatelessWidget {
                                           Padding(
                                             padding:
                                                 EdgeInsets.only(bottom: 0.75.w),
-                                            child: const Text(
+                                            child: Text(
                                               "User Name",
                                               style: TextStyle(
-                                                  color: Color.fromARGB(
-                                                      255, 171, 170, 170)),
+                                                  color: const Color.fromARGB(
+                                                      255, 171, 170, 170),
+                                                  fontSize: 3.w),
                                             ),
                                           ),
                                           SizedBox(
@@ -269,6 +272,7 @@ class ProfileView extends StatelessWidget {
                                               softWrap: true,
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(fontSize: 3.w),
                                             ),
                                           ),
                                         ],
@@ -354,11 +358,12 @@ class ProfileView extends StatelessWidget {
                                             Padding(
                                               padding: EdgeInsets.only(
                                                   bottom: 0.75.w),
-                                              child: const Text(
+                                              child: Text(
                                                 "About",
                                                 style: TextStyle(
-                                                    color: Color.fromARGB(
-                                                        255, 171, 170, 170)),
+                                                    color: const Color.fromARGB(
+                                                        255, 171, 170, 170),
+                                                    fontSize: 3.w),
                                               ),
                                             ),
                                             SizedBox(
@@ -369,6 +374,8 @@ class ProfileView extends StatelessWidget {
                                                       : state.user!.bio,
                                                   trimMode: TrimMode.Length,
                                                   trimLength: 300,
+                                                  style:
+                                                      TextStyle(fontSize: 3.w),
                                                   colorClickableText:
                                                       const Color.fromARGB(
                                                           255, 123, 211, 243),

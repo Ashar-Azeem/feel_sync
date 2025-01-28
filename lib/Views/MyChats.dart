@@ -98,11 +98,11 @@ class _MyChatsViewState extends State<MyChatsView> {
                   enableSuggestions: true,
                   autocorrect: false,
                   controller: search,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Search',
-                      contentPadding: EdgeInsets.only(top: 1.5.h),
-                      prefixIcon: const Icon(Icons.search)),
+                      prefixIcon: Icon(Icons.search)),
+                  textAlignVertical: TextAlignVertical.center,
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -139,7 +139,7 @@ class _MyChatsViewState extends State<MyChatsView> {
                           textAlign: TextAlign.center,
                           text: TextSpan(
                             text:
-                                "Your dont have any chats yet! Head over to the ",
+                                "You don't have any chats yet! Head over to the ",
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 16, height: 1.3),
                             children: [
